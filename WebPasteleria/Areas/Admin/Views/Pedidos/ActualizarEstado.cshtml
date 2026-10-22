@@ -1,0 +1,617 @@
+﻿@model WebPasteleria.Models.Pedido
+
+@{
+    ViewBag.Title = "Actualizar Estado del Pedido";
+    Layout = "/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="actualizar-estado-container">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-exchange-alt"></i> Actualizar Estado del Pedido
+            </h3>
+            <a asp-action="Detalle" asp-route-id="@Model.Id" class="btn btn-secondary btn-sm">
+                <i class="fas fa-arrow-left"></i> Volver al Detalle
+            </a>
+        </div>
+
+        <!-- Información resumida del pedido -->
+        <div class="pedido-resumen">
+            <div class="resumen-item">
+                <span class="label">Código:</span>
+                <span class="value codigo">@Model.CodigoSeguimiento</span>
+            </div>
+            <div class="resumen-item">
+                <span class="label">Cliente:</span>
+                <span class="value">@Model.NombreCliente</span>
+            </div>
+            <div class="resumen-item">
+                <span class="label">Fecha Pedido:</span>
+                <span class="value">@Model.FechaPedido?.ToString("dd/MM/yyyy")</span>
+            </div>
+            <div class="resumen-item">
+                <span class="label">Total:</span>
+                <span class="value precio">@Model.Total?.ToString("N2") Bs</span>
+            </div>
+        </div>
+
+        <!-- Estado actual -->
+        <div class="estado-actual-section">
+            <h4>Estado Actual</h4>
+            <div class="estado-actual-badge">
+                @{
+                    var estadoClass = "";
+                    var estadoTexto = "";
+                    var estadoIcono = "";
+                    
+                    switch (Model.EstadoPedido)
+                    {
+                        case 0:
+                            estadoClass = "estado-pendiente";
+                            estadoTexto = "Pendiente";
+                            estadoIcono = "fa-clock";
+                            break;
+                        case 1:
+                            estadoClass = "estado-confirmado";
+                            estadoTexto = "Confirmado";
+                            estadoIcono = "fa-check";
+                            break;
+                        case 2:
+                            estadoClass = "estado-preparacion";
+                            estadoTexto = "En Preparación";
+                            estadoIcono = "fa-utensils";
+                            break;
+                        case 3:
+                            estadoClass = "estado-listo";
+                            estadoTexto = "Listo para Entregar";
+                            estadoIcono = "fa-box";
+                            break;
+                        case 4:
+                            estadoClass = "estado-camino";
+                            estadoTexto = "En Camino";
+                            estadoIcono = "fa-truck";
+                            break;
+                        case 5:
+                            estadoClass = "estado-entregado";
+                            estadoTexto = "Entregado";
+                            estadoIcono = "fa-check-circle";
+                            break;
+                        case 6:
+                            estadoClass = "estado-cancelado";
+                            estadoTexto = "Cancelado";
+                            estadoIcono = "fa-times-circle";
+                            break;
+                    }
+                }
+                <div class="estado-badge @estadoClass">
+                    <i class="fas @estadoIcono"></i>
+                    <span>@estadoTexto</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulario para cambiar estado -->
+        <form asp-action="ActualizarEstado" method="post" id="formActualizarEstado">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" asp-for="EstadoPedido" id="hiddenEstado" />
+
+            <div class="estados-grid">
+                <h4>Selecciona el Nuevo Estado</h4>
+                
+                <div class="estados-opciones">
+                    <div class="estado-opcion" data-estado="0" onclick="seleccionarEstado(0)">
+                        <div class="estado-icon pendiente">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="estado-info">
+                            <strong>Pendiente</strong>
+                            <small>El pedido está esperando confirmación</small>
+                        </div>
+                    </div>
+
+                    <div class="estado-opcion" data-estado="1" onclick="seleccionarEstado(1)">
+                        <div class="estado-icon confirmado">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="estado-info">
+                            <strong>Confirmado</strong>
+                            <small>El pedido ha sido confirmado</small>
+                        </div>
+                    </div>
+
+                    <div class="estado-opcion" data-estado="2" onclick="seleccionarEstado(2)">
+                        <div class="estado-icon preparacion">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="estado-info">
+                            <strong>En Preparación</strong>
+                            <small>Los productos están siendo preparados</small>
+                        </div>
+                    </div>
+
+                    <div class="estado-opcion" data-estado="3" onclick="seleccionarEstado(3)">
+                        <div class="estado-icon listo">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="estado-info">
+                            <strong>Listo para Entregar</strong>
+                            <small>El pedido está listo para ser recogido o enviado</small>
+                        </div>
+                    </div>
+
+                    <div class="estado-opcion" data-estado="4" onclick="seleccionarEstado(4)">
+                        <div class="estado-icon camino">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="estado-info">
+                            <strong>En Camino</strong>
+                            <small>El pedido está siendo entregado</small>
+                        </div>
+                    </div>
+
+                    <div class="estado-opcion" data-estado="5" onclick="seleccionarEstado(5)">
+                        <div class="estado-icon entregado">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="estado-info">
+                            <strong>Entregado</strong>
+                            <small>El pedido ha sido entregado exitosamente</small>
+                        </div>
+                    </div>
+
+                    <div class="estado-opcion cancelado-option" data-estado="6" onclick="seleccionarEstado(6)">
+                        <div class="estado-icon cancelado">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="estado-info">
+                            <strong>Cancelado</strong>
+                            <small>El pedido ha sido cancelado</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="descripcion">
+                    <i class="fas fa-comment"></i> Descripción / Observaciones
+                </label>
+                <textarea 
+                    id="descripcion" 
+                    name="descripcion" 
+                    class="form-control" 
+                    rows="4" 
+                    placeholder="Describe el cambio de estado o añade observaciones..."
+                    required></textarea>
+                <small class="form-text">Este mensaje se agregará al historial de seguimiento del pedido</small>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Detalle" asp-route-id="@Model.Id" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+                <button type="submit" class="btn btn-primary" id="btnGuardar" disabled>
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Flujo recomendado -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-route"></i> Flujo Recomendado de Estados
+            </h3>
+        </div>
+        <div class="flujo-estados">
+            <div class="flujo-item">
+                <div class="flujo-numero">1</div>
+                <div class="flujo-content">
+                    <i class="fas fa-clock text-warning"></i>
+                    <strong>Pendiente</strong>
+                </div>
+            </div>
+            <div class="flujo-arrow"><i class="fas fa-arrow-right"></i></div>
+            
+            <div class="flujo-item">
+                <div class="flujo-numero">2</div>
+                <div class="flujo-content">
+                    <i class="fas fa-check text-info"></i>
+                    <strong>Confirmado</strong>
+                </div>
+            </div>
+            <div class="flujo-arrow"><i class="fas fa-arrow-right"></i></div>
+            
+            <div class="flujo-item">
+                <div class="flujo-numero">3</div>
+                <div class="flujo-content">
+                    <i class="fas fa-utensils text-primary"></i>
+                    <strong>En Preparación</strong>
+                </div>
+            </div>
+            <div class="flujo-arrow"><i class="fas fa-arrow-right"></i></div>
+            
+            <div class="flujo-item">
+                <div class="flujo-numero">4</div>
+                <div class="flujo-content">
+                    <i class="fas fa-box text-secondary"></i>
+                    <strong>Listo</strong>
+                </div>
+            </div>
+            <div class="flujo-arrow"><i class="fas fa-arrow-right"></i></div>
+            
+            <div class="flujo-item">
+                <div class="flujo-numero">5</div>
+                <div class="flujo-content">
+                    <i class="fas fa-truck text-info"></i>
+                    <strong>En Camino</strong>
+                </div>
+            </div>
+            <div class="flujo-arrow"><i class="fas fa-arrow-right"></i></div>
+            
+            <div class="flujo-item">
+                <div class="flujo-numero">6</div>
+                <div class="flujo-content">
+                    <i class="fas fa-check-circle text-success"></i>
+                    <strong>Entregado</strong>
+                </div>
+            </div>
+        </div>
+        <div class="flujo-note">
+            <i class="fas fa-info-circle"></i>
+            <p>Este es el flujo recomendado, pero puedes cambiar a cualquier estado según las necesidades del pedido.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .actualizar-estado-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .pedido-resumen {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .resumen-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .resumen-item .label {
+        font-size: 12px;
+        color: #666;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .resumen-item .value {
+        font-size: 16px;
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .codigo {
+        font-family: monospace;
+        color: #ff91c7;
+        font-weight: bold;
+    }
+
+    .precio {
+        color: #28a745;
+    }
+
+    .estado-actual-section {
+        padding: 30px;
+        text-align: center;
+        background: white;
+    }
+
+    .estado-actual-section h4 {
+        margin-bottom: 20px;
+        color: #666;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+
+    .estado-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 40px;
+        border-radius: 25px;
+        font-size: 18px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .estado-badge i {
+        font-size: 28px;
+    }
+
+    .estado-pendiente { background: #ffc107; }
+    .estado-confirmado { background: #17a2b8; }
+    .estado-preparacion { background: #007bff; }
+    .estado-listo { background: #6c757d; }
+    .estado-camino { background: #17a2b8; }
+    .estado-entregado { background: #28a745; }
+    .estado-cancelado { background: #dc3545; }
+
+    .estados-grid {
+        padding: 30px;
+    }
+
+    .estados-grid h4 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+    }
+
+    .estados-opciones {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .estado-opcion {
+        background: #f8f9fa;
+        border: 3px solid transparent;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .estado-opcion:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+
+    .estado-opcion.selected {
+        border-color: #ff91c7;
+        background: white;
+        box-shadow: 0 4px 12px rgba(255, 145, 199, 0.3);
+    }
+
+    .estado-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+    }
+
+    .estado-icon.pendiente { background: #ffc107; }
+    .estado-icon.confirmado { background: #17a2b8; }
+    .estado-icon.preparacion { background: #007bff; }
+    .estado-icon.listo { background: #6c757d; }
+    .estado-icon.camino { background: #17a2b8; }
+    .estado-icon.entregado { background: #28a745; }
+    .estado-icon.cancelado { background: #dc3545; }
+
+    .estado-info {
+        flex: 1;
+    }
+
+    .estado-info strong {
+        display: block;
+        color: #2c3e50;
+        font-size: 15px;
+        margin-bottom: 3px;
+    }
+
+    .estado-info small {
+        color: #666;
+        font-size: 12px;
+    }
+
+    .cancelado-option {
+        grid-column: 1 / -1;
+        background: #fff5f5;
+        border-color: #ffcccb;
+    }
+
+    .form-group {
+        padding: 0 30px 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: vertical;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #ff91c7;
+        box-shadow: 0 0 0 3px rgba(255, 145, 199, 0.1);
+    }
+
+    .form-text {
+        display: block;
+        margin-top: 5px;
+        color: #999;
+        font-size: 12px;
+    }
+
+    .form-actions {
+        padding: 20px 30px;
+        background: #f8f9fa;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid #dee2e6;
+    }
+
+    /* Flujo de estados */
+    .flujo-estados {
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .flujo-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .flujo-numero {
+        width: 30px;
+        height: 30px;
+        background: #ff91c7;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .flujo-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .flujo-content i {
+        font-size: 24px;
+    }
+
+    .flujo-content strong {
+        font-size: 12px;
+        text-align: center;
+        color: #2c3e50;
+    }
+
+    .flujo-arrow {
+        color: #ccc;
+        font-size: 20px;
+    }
+
+    .flujo-note {
+        padding: 15px 30px;
+        background: #e7f3ff;
+        border-top: 1px solid #b3d9ff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .flujo-note i {
+        color: #0066cc;
+        font-size: 18px;
+    }
+
+    .flujo-note p {
+        margin: 0;
+        color: #00508c;
+        font-size: 14px;
+    }
+
+    media (max-width: 768px) {
+        .estados-opciones {
+            grid-template-columns: 1fr;
+        }
+
+        .flujo-estados {
+            flex-direction: column;
+        }
+
+        .flujo-arrow {
+            transform: rotate(90deg);
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        let estadoSeleccionado = null;
+
+        function seleccionarEstado(estado) {
+            estadoSeleccionado = estado;
+            
+            // Remover selección previa
+            document.querySelectorAll('.estado-opcion').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Agregar selección al nuevo estado
+            const opcion = document.querySelector(`[data-estado="${estado}"]`);
+            if (opcion) {
+                opcion.classList.add('selected');
+            }
+            
+            // Actualizar campo hidden
+            document.getElementById('hiddenEstado').value = estado;
+            
+            // Habilitar botón guardar
+            document.getElementById('btnGuardar').disabled = false;
+            
+            // Sugerir descripción según el estado
+            const descripcionTextarea = document.getElementById('descripcion');
+            if (!descripcionTextarea.value) {
+                let sugerencia = '';
+                switch(estado) {
+                    case 0: sugerencia = 'Pedido en espera de confirmación.'; break;
+                    case 1: sugerencia = 'Pedido confirmado y en cola de preparación.'; break;
+                    case 2: sugerencia = 'Los productos están siendo preparados por nuestro equipo.'; break;
+                    case 3: sugerencia = 'El pedido está listo para ser recogido o enviado.'; break;
+                    case 4: sugerencia = 'El pedido está en camino hacia su destino.'; break;
+                    case 5: sugerencia = 'El pedido ha sido entregado exitosamente al cliente.'; break;
+                    case 6: sugerencia = 'El pedido ha sido cancelado.'; break;
+                }
+                descripcionTextarea.value = sugerencia;
+            }
+        }
+
+        // Validar formulario antes de enviar
+        document.getElementById('formActualizarEstado').addEventListener('submit', function(e) {
+            if (estadoSeleccionado === null) {
+                e.preventDefault();
+                showNotification('warning', 'Atención', 'Por favor selecciona un estado');
+                return false;
+            }
+            
+            const descripcion = document.getElementById('descripcion').value;
+            if (!descripcion.trim()) {
+                e.preventDefault();
+                showNotification('warning', 'Atención', 'Por favor ingresa una descripción');
+                return false;
+            }
+            
+            return true;
+        });
+    </script>
+}

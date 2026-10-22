@@ -1,0 +1,348 @@
+﻿@model IEnumerable<WebPasteleria.Models.Producto>
+
+@{
+	ViewData["Title"] = "Nuestros Productos - Pastelería Carmen";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section style="background-color: #ffe4f0;">
+
+	<!-- Title Banner -->
+	<section class="bg-img1 txt-center p-lr-15 p-tb-92" style="background-color: #ffb3d9;">
+		<h2 class="ltext-105 cl0 txt-center">
+			Nuestros Productos
+		</h2>
+		<p class="stext-107 cl0 txt-center p-t-10">
+			Descubre la dulzura de nuestras creaciones artesanales
+		</p>
+	</section>
+
+	<!-- Product Section -->
+	<div class="m-t-23 p-b-140">
+		<div class="container">
+			<div class="flex-w flex-sb-m p-b-52">
+				<!-- Category Filters -->
+				<div class="flex-w flex-l-m filter-tope-group m-tb-10">
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1 filter-category" data-filter="*" style="border-color: #ff91c7; color: #ff91c7;">
+						Todos los Productos
+					</button>
+
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-category" data-filter="Torta" style="border-color: #ff91c7;">
+						Tortas
+					</button>
+
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-category" data-filter="Tarta" style="border-color: #ff91c7;">
+						Tartas
+					</button>
+
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-category" data-filter="Pay" style="border-color: #ff91c7;">
+						Pays
+					</button>
+
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 filter-category" data-filter="Cupcake" style="border-color: #ff91c7;">
+						Cupcakes
+					</button>
+				</div>
+
+				<!-- Search Controls -->
+				<div class="flex-w flex-c-m m-tb-10">
+					<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search" style="border-color: #ff91c7;">
+						<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search" style="color: #ff91c7;"></i>
+						<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none" style="color: #ff91c7;"></i>
+						Buscar
+					</div>
+				</div>
+
+				<!-- Search product -->
+				<div class="dis-none panel-search w-full p-t-10 p-b-15">
+					<div class="bor8 dis-flex p-l-15" style="border-color: #ff91c7;">
+						<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04" style="color: #ff91c7;">
+							<i class="zmdi zmdi-search"></i>
+						</button>
+
+						<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" id="search-product-input" placeholder="Buscar productos...">
+					</div>
+				</div>
+			</div>
+
+			<!-- Products Grid -->
+			<div class="row" id="products-container">
+				@if (Model != null && Model.Any())
+				{
+					@foreach (var producto in Model)
+					{
+						var categoriaClass = producto.IdCategoriaNavigation.Nombre?.ToLower().Replace(" ", "-") ?? "otros";
+						var imagenUrl = string.IsNullOrEmpty(producto.ImagenUrl) ? "~/images/no-image.jpg" : producto.ImagenUrl;
+
+						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 product-item"
+							 data-product-id="@producto.Id"
+							 data-product-name="@producto.Nombre"
+							 data-product-price="@producto.Precio"
+							 data-product-image="@imagenUrl"
+							 data-category="@categoriaClass">
+							<!-- Block2 -->
+							<div class="block2" style="background-color: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+								<div class="block2-pic hov-img0" style="position: relative;">
+									<img src="@imagenUrl" alt="@producto.Nombre" style="width: 100%; height: 300px; object-fit: cover;">
+
+									@if (producto.Stock > 0)
+									{
+										<button class="btn-add-cart-direct flex-c-m stext-103 cl2 size-102 bor2 hov-btn1 p-lr-15 trans-04"
+										   data-product-id="@producto.Id"
+										   data-product-name="@producto.Nombre"
+										   data-product-price="@producto.Precio"
+										   data-product-image="@imagenUrl"
+										   style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background-color: #ff91c7; border-color: #ff91c7; color: #fff; cursor: pointer;">
+											<i class="zmdi zmdi-shopping-cart m-r-5"></i>
+											Agregar al Carrito
+										</button>
+									}
+									else
+									{
+										<span class="flex-c-m stext-103 cl2 size-102 p-lr-15"
+											  style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background-color: #999; color: #fff; cursor: not-allowed;">
+											Agotado
+										</span>
+									}
+								</div>
+
+								<div class="block2-txt flex-w flex-t p-t-14 p-lr-15 p-b-15">
+									<div class="block2-txt-child1 flex-col-l" style="width: 100%;">
+										<a asp-controller="Home" asp-action="DetalleProducto" asp-route-id="@producto.Id"
+										   class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6"
+										   style="color: #333; font-weight: 500;">
+											@producto.Nombre
+										</a>
+
+										<span class="stext-105" style="color: #ff91c7; font-weight: bold; font-size: 18px;">
+											@producto.Precio.ToString("N2") Bs
+										</span>
+
+										@if (producto.Stock > 0)
+										{
+											<span class="stext-107 cl6 p-t-5" style="font-size: 12px; color: #666;">
+												<i class="zmdi zmdi-check-circle" style="color: #4caf50;"></i> @producto.Stock disponibles
+											</span>
+										}
+										else
+										{
+											<span class="stext-107 p-t-5" style="font-size: 12px; color: #ff4444;">
+												<i class="zmdi zmdi-alert-circle"></i> Sin stock
+											</span>
+										}
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				}
+				else
+				{
+					<div class="col-12 text-center p-t-50 p-b-50">
+						<i class="zmdi zmdi-shopping-cart" style="font-size: 80px; color: #ff91c7;"></i>
+						<h3 class="mtext-111 cl2 p-t-20">No hay productos disponibles</h3>
+						<p class="stext-113 cl6">Por favor, vuelve más tarde</p>
+					</div>
+				}
+			</div>
+
+			<!-- Mensaje cuando no hay resultados de búsqueda/filtro -->
+			<div class="col-12 text-center p-t-50 p-b-50 dis-none" id="no-results-message">
+				<i class="zmdi zmdi-search" style="font-size: 80px; color: #ff91c7;"></i>
+				<h3 class="mtext-111 cl2 p-t-20">No se encontraron productos</h3>
+				<p class="stext-113 cl6">Intenta con otra búsqueda o categoría</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Back to top -->
+	<div class="btn-back-to-top" id="myBtn" style="background-color: #ff91c7;">
+		<span class="symbol-btn-back-to-top">
+			<i class="zmdi zmdi-chevron-up" style="color: #fff;"></i>
+		</span>
+	</div>
+</section>
+
+@section Scripts {
+	<script>
+		// Carrito en memoria (localStorage)
+		let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+
+		// Actualizar contador del carrito
+		function actualizarCarrito() {
+			const cartItemsList = document.getElementById('cart-items-list');
+			const cartTotal = document.getElementById('cart-total');
+			const cartNotify = document.querySelector('.js-show-cart');
+
+			if (carrito.length === 0) {
+				if (cartItemsList) {
+					cartItemsList.innerHTML = '<li class="p-lr-15 p-tb-20"><p class="stext-113 cl6">Tu carrito está vacío</p></li>';
+				}
+				if (cartTotal) {
+					cartTotal.textContent = 'Total: 0 Bs';
+				}
+				if (cartNotify) {
+					cartNotify.setAttribute('data-notify', '0');
+				}
+				return;
+			}
+
+			let html = '';
+			let total = 0;
+
+			carrito.forEach((item, index) => {
+				const subtotal = item.precio * item.cantidad;
+				total += subtotal;
+
+				html += `
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-img">
+							<img src="${item.imagen}" alt="${item.nombre}">
+						</div>
+						<div class="header-cart-item-txt p-t-8">
+							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+								${item.nombre}
+							</a>
+							<span class="header-cart-item-info">
+								${item.cantidad} x ${item.precio.toFixed(2)} Bs
+							</span>
+						</div>
+						<button class="btn-remove-cart" data-index="${index}" style="border: none; background: none; color: #ff91c7; cursor: pointer; font-size: 18px;">
+							<i class="zmdi zmdi-close"></i>
+						</button>
+					</li>
+				`;
+			});
+
+			if (cartItemsList) {
+				cartItemsList.innerHTML = html;
+			}
+			if (cartTotal) {
+				cartTotal.textContent = `Total: ${total.toFixed(2)} Bs`;
+			}
+			if (cartNotify) {
+				cartNotify.setAttribute('data-notify', carrito.length);
+			}
+
+			// Event listeners para eliminar items
+			document.querySelectorAll('.btn-remove-cart').forEach(btn => {
+				btn.addEventListener('click', function() {
+					const index = parseInt(this.getAttribute('data-index'));
+					carrito.splice(index, 1);
+					localStorage.setItem('carrito', JSON.stringify(carrito));
+					actualizarCarrito();
+				});
+			});
+		}
+
+		// Agregar al carrito directamente
+		function agregarAlCarrito(productoId, nombre, precio, imagen, cantidad = 1) {
+			const itemExistente = carrito.find(item => item.id === productoId);
+
+			if (itemExistente) {
+				itemExistente.cantidad += cantidad;
+			} else {
+				carrito.push({
+					id: productoId,
+					nombre: nombre,
+					precio: precio,
+					imagen: imagen,
+					cantidad: cantidad
+				});
+			}
+
+			localStorage.setItem('carrito', JSON.stringify(carrito));
+			actualizarCarrito();
+
+			// Mostrar mensaje de éxito
+			swal({
+				title: "¡Agregado!",
+				text: nombre + " se agregó al carrito exitosamente",
+				icon: "success",
+				button: "Aceptar",
+				timer: 2000
+			});
+		}
+
+		// Event listeners para agregar al carrito
+		document.querySelectorAll('.btn-add-cart-direct').forEach(btn => {
+			btn.addEventListener('click', function(e) {
+				e.preventDefault();
+				const productoId = this.getAttribute('data-product-id');
+				const nombre = this.getAttribute('data-product-name');
+				const precio = parseFloat(this.getAttribute('data-product-price'));
+				const imagen = this.getAttribute('data-product-image');
+
+				agregarAlCarrito(productoId, nombre, precio, imagen, 1);
+			});
+		});
+
+		// Filtrado por categorías
+		let currentCategory = '*';
+		let searchTerm = '';
+
+		document.querySelectorAll('.filter-category').forEach(btn => {
+			btn.addEventListener('click', function(e) {
+				e.preventDefault();
+				
+				// Remover clase activa de todos los botones
+				document.querySelectorAll('.filter-category').forEach(b => {
+					b.classList.remove('how-active1');
+					b.style.color = '#666';
+				});
+				
+				// Agregar clase activa al botón clickeado
+				this.classList.add('how-active1');
+				this.style.color = '#ff91c7';
+				
+				currentCategory = this.getAttribute('data-filter');
+				filtrarProductos();
+			});
+		});
+
+		// Buscar productos
+		const searchInput = document.getElementById('search-product-input');
+		if (searchInput) {
+			searchInput.addEventListener('input', function() {
+				searchTerm = this.value.toLowerCase();
+				filtrarProductos();
+			});
+		}
+
+		// Función para filtrar productos
+		function filtrarProductos() {
+			const productos = document.querySelectorAll('.product-item');
+			const noResults = document.getElementById('no-results-message');
+			let hasVisibleProducts = false;
+
+			productos.forEach(item => {
+				const productName = item.getAttribute('data-product-name').toLowerCase();
+				const productCategory = item.getAttribute('data-category');
+				
+				const matchesSearch = searchTerm === '' || productName.includes(searchTerm);
+				const matchesCategory = currentCategory === '*' || productCategory === currentCategory;
+				
+				if (matchesSearch && matchesCategory) {
+					item.style.display = '';
+					hasVisibleProducts = true;
+				} else {
+					item.style.display = 'none';
+				}
+			});
+
+			// Mostrar/ocultar mensaje de "no hay resultados"
+			if (noResults) {
+				if (hasVisibleProducts) {
+					noResults.classList.add('dis-none');
+				} else {
+					noResults.classList.remove('dis-none');
+				}
+			}
+		}
+
+		// Inicializar carrito al cargar la página
+		document.addEventListener('DOMContentLoaded', function() {
+			actualizarCarrito();
+		});
+	</script>
+}

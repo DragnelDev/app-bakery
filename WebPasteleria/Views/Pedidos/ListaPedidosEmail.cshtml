@@ -1,0 +1,240 @@
+﻿@model IEnumerable<WebPasteleria.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Mis Pedidos - Pastelería Carmen";
+    var emailBuscado = ViewBag.EmailBuscado as string;
+}
+
+<section style="background-color: #ffe4f0; min-height: 100vh;">
+    <!-- Breadcrumb -->
+    <div class="container">
+        <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+            <a asp-controller="Home" asp-action="Index" class="stext-109 cl8 hov-cl1 trans-04">
+                Inicio
+                <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+            </a>
+
+            <a asp-controller="Pedidos" asp-action="BuscarPedido" class="stext-109 cl8 hov-cl1 trans-04">
+                Rastrear Pedido
+                <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+            </a>
+
+            <span class="stext-109 cl4">
+                Mis Pedidos
+            </span>
+        </div>
+    </div>
+
+    <div class="container p-t-50 p-b-85">
+        <!-- Header -->
+        <div class="text-center m-b-40">
+            <div style="font-size: 60px; color: #ff91c7;">
+                <i class="fa fa-list-alt"></i>
+            </div>
+            <h2 class="ltext-105 cl2 m-t-20" style="color: #ff91c7;">
+                Mis Pedidos
+            </h2>
+            <p class="stext-113 cl6 m-t-10">
+                Pedidos asociados a: <strong>@emailBuscado</strong>
+            </p>
+        </div>
+
+        <!-- Lista de Pedidos -->
+        <div class="row">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var pedido in Model)
+                {
+                    var estadoClass = pedido.EstadoPedido switch
+                    {
+                        0 => "warning", // Pendiente
+                        1 => "info",    // Confirmado
+                        2 => "primary", // En Preparación
+                        3 => "success", // Listo
+                        4 => "info",    // En Camino
+                        5 => "success", // Entregado
+                        //-1 => "danger", // Cancelado
+                        _ => "secondary"
+                    };
+
+                    var estadoTexto = pedido.EstadoPedido switch
+                    {
+                        0 => "Pendiente",
+                        1 => "Confirmado",
+                        2 => "En Preparación",
+                        3 => "Listo para Entrega",
+                        4 => "En Camino",
+                        5 => "Entregado",
+                        //-1 => "Cancelado",
+                        _ => "Desconocido"
+                    };
+
+                    var iconoEstado = pedido.EstadoPedido switch
+                    {
+                        0 => "fa-clock-o",
+                        1 => "fa-check",
+                        2 => "fa-cutlery",
+                        3 => "fa-gift",
+                        4 => "fa-truck",
+                        5 => "fa-smile-o",
+                        //-1 => "fa-times",
+                        _ => "fa-circle"
+                    };
+
+                    <div class="col-12 m-b-30">
+                        <div class="bor10 p-lr-40 p-t-30 p-b-30" style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
+                            <div class="row">
+                                <!-- Información del Pedido -->
+                                <div class="col-md-8">
+                                    <div class="flex-w flex-sb-m m-b-20">
+                                        <div>
+                                            <h5 class="mtext-110 cl2">
+                                                Pedido #@pedido.CodigoSeguimiento
+                                            </h5>
+                                            <p class="stext-112 cl6 m-t-5">
+                                                <i class="fa fa-calendar"></i> @pedido.FechaPedido?.ToString("dd/MM/yyyy HH:mm")
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <span class="badge badge-@estadoClass" style="font-size: 14px; padding: 8px 15px; border-radius: 20px;">
+                                                <i class="fa @iconoEstado"></i> @estadoTexto
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row m-b-15">
+                                        <div class="col-sm-6">
+                                            <p class="stext-112 cl6">
+                                                <i class="fa fa-user" style="color: #ff91c7;"></i>
+                                                <strong>Cliente:</strong> @pedido.NombreCliente
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p class="stext-112 cl6">
+                                                <i class="fa fa-phone" style="color: #ff91c7;"></i>
+                                                <strong>Teléfono:</strong> @pedido.CelularCliente
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p class="stext-112 cl6">
+                                                <i class="fa fa-truck" style="color: #ff91c7;"></i>
+                                                <strong>Entrega:</strong> @(pedido.TipoEntrega == "RECOGER" ? "Recoger en tienda" : "A domicilio")
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <p class="stext-112 cl6">
+                                                <i class="fa fa-credit-card" style="color: #ff91c7;"></i>
+                                                <strong>Pago:</strong> @pedido.MetodoPagoNavigation?.Nombre
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    @if (pedido.FechaEntrega.HasValue)
+                                    {
+                                        <p class="stext-112 cl6">
+                                            <i class="fa fa-calendar-check-o" style="color: #ff91c7;"></i>
+                                            <strong>Entrega estimada:</strong> @pedido.FechaEntrega.Value.ToString("dd/MM/yyyy")
+                                        </p>
+                                    }
+                                </div>
+
+                                <!-- Total y Acciones -->
+                                <div class="col-md-4 text-right">
+                                    <div class="m-b-20">
+                                        <p class="stext-111 cl6 m-b-5">Total</p>
+                                        <h4 class="mtext-110" style="color: #ff91c7;">
+                                            @pedido.Total?.ToString("N2") Bs
+                                        </h4>
+                                    </div>
+
+                                    <a asp-controller="Pedidos" asp-action="Seguimiento" asp-route-codigo="@pedido.CodigoSeguimiento"
+                                       class="flex-c-m stext-101 cl0 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-b-10"
+                                       style="background-color: #ff91c7; border-color: #ff91c7; display: inline-block; width: 100%;">
+                                        <i class="fa fa-eye"></i> Ver Detalle
+                                    </a>
+
+                                    @if (pedido.EstadoPedido < 3)
+                                    {
+                                        <a asp-controller="Home" asp-action="Contacto"
+                                           class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer"
+                                           style="border-color: #ff91c7; color: #ff91c7; display: inline-block; width: 100%;">
+                                            <i class="fa fa-phone"></i> Contactar
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Resumen -->
+                <div class="col-12 text-center m-t-20">
+                    <p class="stext-113 cl6">
+                        Total de pedidos encontrados: <strong>@Model.Count()</strong>
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <div class="p-all-50" style="background-color: #fff; border-radius: 10px;">
+                        <i class="fa fa-inbox" style="font-size: 80px; color: #ff91c7;"></i>
+                        <h4 class="mtext-110 cl2 m-t-20">No se encontraron pedidos</h4>
+                        <p class="stext-113 cl6 m-t-10">
+                            No hay pedidos asociados a este correo electrónico
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Acciones Adicionales -->
+        <div class="row m-t-40">
+            <div class="col-12 text-center">
+                <a asp-controller="Pedidos" asp-action="BuscarPedido"
+                   class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-r-10"
+                   style="border-color: #ff91c7; color: #ff91c7; display: inline-block;">
+                    <i class="fa fa-search"></i> Buscar Otro Pedido
+                </a>
+
+                <a asp-controller="Home" asp-action="Index"
+                   class="flex-c-m stext-101 cl0 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer"
+                   style="background-color: #ff91c7; border-color: #ff91c7; display: inline-block;">
+                    <i class="fa fa-home"></i> Volver al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .badge-warning {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .badge-info {
+        background-color: #17a2b8;
+        color: #fff;
+    }
+
+    .badge-primary {
+        background-color: #ff91c7;
+        color: #fff;
+    }
+
+    .badge-success {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .badge-danger {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .badge-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+</style>

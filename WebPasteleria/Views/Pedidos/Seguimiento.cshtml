@@ -1,0 +1,314 @@
+﻿@model WebPasteleria.Models.Pedido
+
+@{
+    ViewData["Title"] = "Seguimiento de Pedido - Pastelería Carmen";
+    var seguimientos = ViewBag.Seguimientos as List<WebPasteleria.Models.SeguimientoPedido>;
+    var detalles = ViewBag.Detalles as List<WebPasteleria.Models.DetallePedido>;
+}
+
+<section style="background-color: #ffe4f0;">
+    <!-- Breadcrumb -->
+    <div class="container">
+        <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+            <a asp-controller="Home" asp-action="Index" class="stext-109 cl8 hov-cl1 trans-04">
+                Inicio
+                <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+            </a>
+
+            <a asp-controller="Pedidos" asp-action="BuscarPedido" class="stext-109 cl8 hov-cl1 trans-04">
+                Rastrear Pedido
+                <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+            </a>
+
+            <span class="stext-109 cl4">
+                @Model.CodigoSeguimiento
+            </span>
+        </div>
+    </div>
+
+    <div class="container p-t-50 p-b-85">
+        <!-- Código de Seguimiento Header -->
+        <div class="text-center m-b-40">
+            <div class="p-all-30" style="background-color: #fff; border-radius: 10px; display: inline-block; min-width: 400px;">
+                <p class="stext-111 cl6 m-b-5">Código de Seguimiento</p>
+                <h2 class="ltext-103" style="color: #ff91c7; letter-spacing: 3px;">
+                    @Model.CodigoSeguimiento
+                </h2>
+                <p class="stext-112 cl6 m-t-10">
+                    <i class="fa fa-calendar"></i> Pedido realizado: @Model.FechaPedido?.ToString("dd/MM/yyyy HH:mm")
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Timeline de Estados -->
+            <div class="col-lg-8 m-b-50">
+                <div class="bor10 p-lr-40 p-t-40 p-b-40" style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
+                    <h4 class="mtext-109 cl2 m-b-40">
+                        <i class="fa fa-map-marker" style="color: #ff91c7;"></i> Estado del Pedido
+                    </h4>
+
+                    <!-- Timeline Visual -->
+                    <div class="timeline">
+                        @{
+                            var estados = new Dictionary<int, string>
+                                                {
+                                                { 0, "Pendiente" },
+                                                { 1, "Confirmado" },
+                                                { 2, "En Preparación" },
+                                                { 3, "Listo para Entrega" },
+                                                { 4, "En Camino" },
+                                                { 5, "Entregado" },
+                                                { 6, "Cancelado" }
+                                                };
+
+                            var iconos = new Dictionary<int, string>
+                                                {
+                                                { 0, "fa-clock-o" },
+                                                { 1, "fa-check" },
+                                                { 2, "fa-cutlery" },
+                                                { 3, "fa-gift" },
+                                                { 4, "fa-truck" },
+                                                { 5, "fa-smile-o" },
+                                                { 6, "fa-times" }
+                                                };
+
+                            var colores = new Dictionary<int, string>
+                                                {
+                                                { 0, "#ffc107" },
+                                                { 1, "#17a2b8" },
+                                                { 2, "#ff91c7" },
+                                                { 3, "#28a745" },
+                                                { 4, "#007bff" },
+                                                { 5, "#28a745" },
+                                                { 6, "#dc3545" }
+                                                };
+
+                            int estadoActual = Model.EstadoPedido ?? 0;
+                        }
+
+                        <!-- Barra de Progreso -->
+                        <div class="progress m-b-40" style="height: 10px; background-color: #f0f0f0;">
+                            @{
+                                int progreso = 0;
+                                switch (estadoActual)
+                                {
+                                    case 0: progreso = 10; break;
+                                    case 1: progreso = 30; break;
+                                    case 2: progreso = 50; break;
+                                    case 3: progreso = 70; break;
+                                    case 4: progreso = 90; break;
+                                    case 5: progreso = 100; break;
+                                    case 6: progreso = 100; break;
+                                }
+                            }
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: @progreso%; background-color: @colores[estadoActual];"
+                                 aria-valuenow="@progreso" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        <!-- Estado Actual Destacado -->
+                        <div class="text-center m-b-40 p-all-30" style="background: linear-gradient(135deg, @colores[estadoActual]22, #fff); border-radius: 10px; border: 2px solid @colores[estadoActual];">
+                            <div style="font-size: 60px; color: @colores[estadoActual];">
+                                <i class="fa @iconos[estadoActual]"></i>
+                            </div>
+                            <h3 class="mtext-110 cl2 m-t-15">@estados[estadoActual]</h3>
+                            @if (seguimientos != null && seguimientos.Any())
+                            {
+                                <p class="stext-113 cl6 m-t-10">
+                                    @seguimientos.First().Descripcion
+                                </p>
+                                <small class="stext-112 cl6">
+                                    <i class="fa fa-clock-o"></i> @seguimientos.First().Fecha?.ToString("dd/MM/yyyy HH:mm")
+                                </small>
+                            }
+                        </div>
+
+                        <!-- Historial de Seguimiento -->
+                        @if (seguimientos != null && seguimientos.Any())
+                        {
+                            <h5 class="mtext-110 cl2 m-b-30">
+                                <i class="fa fa-history" style="color: #ff91c7;"></i> Historial
+                            </h5>
+
+                            <div class="timeline-container">
+                                @foreach (var seg in seguimientos.OrderBy(s => s.Fecha))
+                                {
+                                    var colorEstado = colores.ContainsKey(seg.EstadoPedido) ? colores[seg.EstadoPedido] : "#6c757d";
+                                    var iconoEstado = iconos.ContainsKey(seg.EstadoPedido) ? iconos[seg.EstadoPedido] : "fa-circle";
+                                    var nombreEstado = estados.ContainsKey(seg.EstadoPedido) ? estados[seg.EstadoPedido] : "Desconocido";
+
+                                    <div class="timeline-item m-b-25" style="display: flex; gap: 20px;">
+                                        <div class="timeline-icon" style="flex-shrink: 0;">
+                                            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: @colorEstado; display: flex; align-items: center; justify-content: center; color: #fff;">
+                                                <i class="fa @iconoEstado"></i>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-content" style="flex: 1;">
+                                            <div class="p-all-15" style="background-color: #f8f9fa; border-radius: 8px; border-left: 3px solid @colorEstado;">
+                                                <h6 class="stext-111 cl2 m-b-5">@nombreEstado</h6>
+                                                <p class="stext-112 cl6 m-b-5">@seg.Descripcion</p>
+                                                <small class="stext-112 cl6">
+                                                    <i class="fa fa-clock-o"></i> @seg.Fecha?.ToString("dd/MM/yyyy HH:mm")
+                                                    @if (!string.IsNullOrEmpty(seg.UsuarioRegistro))
+                                                    {
+                                                        <span> | <i class="fa fa-user"></i> @seg.UsuarioRegistro</span>
+                                                    }
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- Información de Entrega -->
+                        @if (estadoActual >= 3 && Model.FechaEntrega.HasValue)
+                        {
+                            <div class="m-t-30 p-all-20" style="background-color: #e7f3ff; border-radius: 8px; border-left: 4px solid #007bff;">
+                                <h6 class="stext-111 cl2 m-b-10">
+                                    <i class="fa fa-info-circle" style="color: #007bff;"></i> Información de Entrega
+                                </h6>
+                                <p class="stext-112 cl6">
+                                    <strong>Fecha estimada:</strong> @Model.FechaEntrega.Value.ToString("dd/MM/yyyy")<br>
+                                    <strong>Tipo:</strong> @(Model.TipoEntrega == "RECOGER" ? "Recoger en tienda" : "Entrega a domicilio")
+                                    @if (Model.TipoEntrega == "RECOGER")
+                                    {
+                                        <div>
+                                            <strong>Dirección:</strong>
+                                            Av.Jaime Mendoza 456, Sucre
+                                        </div>
+                                    }
+                                </p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen del Pedido -->
+            <div class="col-lg-4 m-b-50">
+                <!-- Información del Pedido -->
+                <div class="bor10 p-lr-30 p-t-30 p-b-30 m-b-20" style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
+                    <h5 class="mtext-110 cl2 m-b-20">
+                        <i class="fa fa-info-circle" style="color: #ff91c7;"></i> Información
+                    </h5>
+
+                    <div class="m-b-15">
+                        <p class="stext-112 cl6 m-b-5"><strong>Cliente:</strong></p>
+                        <p class="stext-113 cl2">@Model.NombreCliente</p>
+                    </div>
+
+                    <div class="m-b-15">
+                        <p class="stext-112 cl6 m-b-5"><strong>Email:</strong></p>
+                        <p class="stext-113 cl2">@Model.EmailCliente</p>
+                    </div>
+
+                    <div class="m-b-15">
+                        <p class="stext-112 cl6 m-b-5"><strong>Teléfono:</strong></p>
+                        <p class="stext-113 cl2">@Model.CelularCliente</p>
+                    </div>
+
+                    <div class="m-b-15">
+                        <p class="stext-112 cl6 m-b-5"><strong>Método de Pago:</strong></p>
+                        <p class="stext-113 cl2">@Model.MetodoPagoNavigation?.Nombre</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Observaciones))
+                    {
+                        <div class="m-t-20 p-all-15" style="background-color: #fff5f8; border-radius: 8px;">
+                            <p class="stext-112 cl6 m-b-5"><strong>Observaciones:</strong></p>
+                            <p class="stext-113 cl6">@Model.Observaciones</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Productos -->
+                <div class="bor10 p-lr-30 p-t-30 p-b-30 m-b-20" style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
+                    <h5 class="mtext-110 cl2 m-b-20">
+                        <i class="fa fa-shopping-bag" style="color: #ff91c7;"></i> Productos
+                    </h5>
+
+                    @if (detalles != null && detalles.Any())
+                    {
+                        @foreach (var detalle in detalles)
+                        {
+                            <div class="flex-w flex-sb-m p-b-15 bor12">
+                                <div>
+                                    <p class="stext-111 cl2">@detalle.IdProductoNavigation?.Nombre</p>
+                                    <p class="stext-112 cl6">@detalle.Cantidad x @detalle.PrecioUnitario.ToString("N2") Bs</p>
+                                </div>
+                                <div>
+                                    <p class="stext-111 cl2">@((detalle.Cantidad * detalle.PrecioUnitario).ToString("N2")) Bs</p>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="flex-w flex-sb-m p-t-15">
+                            <p class="mtext-110 cl2">Total:</p>
+                            <p class="mtext-110" style="color: #ff91c7;">@Model.Total?.ToString("N2") Bs</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Acciones -->
+                <div class="text-center">
+                    <button onclick="window.print()"
+                            class="flex-c-m stext-101 cl0 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-b-10"
+                            style="background-color: #ff91c7; border-color: #ff91c7; width: 100%;">
+                        <i class="fa fa-print"></i> Imprimir
+                    </button>
+
+                    <a asp-controller="Home" asp-action="Contacto"
+                       class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-b-10"
+                       style="border-color: #ff91c7; color: #ff91c7; display: block;">
+                        <i class="fa fa-phone"></i> Contactar
+                    </a>
+
+                    <a asp-controller="Pedidos" asp-action="BuscarPedido"
+                       class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer"
+                       style="border-color: #ff91c7; color: #ff91c7; display: block;">
+                        <i class="fa fa-search"></i> Buscar Otro Pedido
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contacto de Ayuda -->
+        <div class="row m-t-30">
+            <div class="col-12">
+                <div class="p-all-30 text-center" style="background-color: #fff; border-radius: 10px;">
+                    <h5 class="mtext-110 cl2 m-b-20">¿Necesitas ayuda con tu pedido?</h5>
+                    <p class="stext-113 cl6">
+                        <i class="fa fa-phone" style="color: #ff91c7;"></i> (+591) 4 645-7890 |
+                        <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp: +591 4645-7890 |
+                        <i class="fa fa-envelope" style="color: #ff91c7;"></i> pedidos@pasteleriacarmen.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .timeline-container {
+        position: relative;
+    }
+
+    .timeline-item:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 50px;
+        width: 2px;
+        height: calc(100% - 10px);
+        background-color: #e5e5e5;
+    }
+
+    @@media print {
+        .btn, a, button {
+            display: none !important;
+        }
+    }
+</style>

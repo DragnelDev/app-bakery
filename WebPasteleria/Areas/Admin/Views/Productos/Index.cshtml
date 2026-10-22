@@ -1,0 +1,439 @@
+﻿@model IEnumerable<WebPasteleria.Models.Producto>
+
+@{
+    ViewData["Title"] = "Productos & Menú";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="productos-header">
+    <div>
+        <h1><i class="fas fa-boxes"></i> Catálogo de Productos</h1>
+        <p class="subtitle">Gestiona el inventario de productos de Pastelería Carmen</p>
+    </div>
+    <a asp-action="Create" class="btn-create">
+        <i class="fa fa-plus"></i> Nuevo Producto
+    </a>
+</div>
+
+<div class="productos-container">
+    <div class="table-card">
+        <div class="table-responsive">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <span class="codigo-badge">@item.Codigo</span>
+                                </td>
+                                <td>
+                                    <div class="producto-info">
+                                        @if (!string.IsNullOrEmpty(item.ImagenUrl))
+                                        {
+                                            <img src="@item.ImagenUrl" alt="@item.Nombre" class="producto-img" />
+                                        }
+                                        else
+                                        {
+                                            <div class="producto-img-placeholder">
+                                                <i class="fas fa-cake-candles"></i>
+                                            </div>
+                                        }
+                                        <div>
+                                            <strong>@item.Nombre</strong>
+                                            <small>@item.UnidadMedida</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="precio-text">Bs. @item.Precio.ToString("N2")</span>
+                                </td>
+                                <td>
+                                    @if (item.Stock > 10)
+                                    {
+                                        <span class="stock-badge stock-alto">@item.Stock unidades</span>
+                                    }
+                                    else if (item.Stock > 0)
+                                    {
+                                        <span class="stock-badge stock-medio">@item.Stock unidades</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="stock-badge stock-bajo">Agotado</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="tipo-badge">@item.Tipo</span>
+                                </td>
+                                <td>
+                                    @if (item.Estado == 1)
+                                    {
+                                        <span class="estado-badge activo">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="estado-badge inactivo">Inactivo</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-view"
+                                            title="Ver Detalles">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-edit" title="Editar">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete"
+                                            title="Eliminar">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="fas fa-box-open"></i>
+                                <p>No hay productos registrados</p>
+                                <a asp-action="Create" class="btn-create-small">Crear primer producto</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .productos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .productos-header h1 {
+            color: #c71585;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .productos-header h1 i {
+            margin-right: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+            color: white;
+        }
+
+        .productos-container {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-card {
+            padding: 0;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        .modern-table thead {
+            background: linear-gradient(90deg, #ff69b4 0%, #ff1493 100%);
+        }
+
+        .modern-table th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .modern-table tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+
+        .modern-table tbody tr:hover {
+            background: #fff5f8;
+        }
+
+        .modern-table td {
+            padding: 15px;
+            vertical-align: middle;
+        }
+
+        .codigo-badge {
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            color: #555;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .producto-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .producto-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #f0f0f0;
+        }
+
+        .producto-img-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .producto-info div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .producto-info strong {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .producto-info small {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .precio-text {
+            font-weight: 700;
+            color: #2ecc71;
+            font-size: 15px;
+        }
+
+        .stock-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .stock-alto {
+            background: #d1f2eb;
+            color: #0f5132;
+        }
+
+        .stock-medio {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .stock-bajo {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .tipo-badge {
+            background: #e7e7ff;
+            color: #4a4a9e;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .estado-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .estado-badge.activo {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .estado-badge.inactivo {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-action {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-view {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-view:hover {
+            background: #1976d2;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .btn-edit:hover {
+            background: #f57c00;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .btn-delete:hover {
+            background: #d32f2f;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px !important;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .empty-state p {
+            color: #999;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn-create-small {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        (max-width: 768px) {
+            .productos-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .modern-table {
+                font-size: 12px;
+            }
+
+            .modern-table th,
+            .modern-table td {
+                padding: 10px 8px;
+            }
+
+            .producto-img,
+            .producto-img-placeholder {
+                width: 40px;
+                height: 40px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+}

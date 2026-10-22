@@ -1,0 +1,219 @@
+﻿@{
+	ViewData["Title"] = "Contacto - Pastelería Carmen";
+}
+
+<section>
+	<!-- Title page -->
+	<section class="bg-img1 txt-center p-lr-15 p-tb-92"
+		style="background-image: url('images/bg-01.jpg'); background-color: #ffb3d9;">
+		<h2 class="ltext-105 cl0 txt-center">
+			Contáctanos
+		</h2>
+	</section>
+
+
+	<!-- Content page -->
+	<section class="p-t-104 p-b-116" style="background-color: #ffe4f0;">
+		<div class="container">
+			<div class="flex-w flex-tr">
+				<div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md" style="background-color: #fff;">
+					<form asp-controller="Home" asp-action="EnviarContacto" method="post">
+						<h4 class="mtext-105 cl2 txt-center p-b-30">
+							Envíanos un Mensaje
+						</h4>
+
+						<div class="bor8 m-b-20 how-pos4-parent">
+							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" name="nombre"
+								placeholder="Tu Nombre Completo" required>
+							<img class="how-pos4 pointer-none" src="~/images/icons/icon-email.png" alt="ICON">
+						</div>
+
+						<div class="bor8 m-b-20 how-pos4-parent">
+							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="email" name="email"
+								placeholder="Tu Correo Electrónico" required>
+							<img class="how-pos4 pointer-none" src="~/images/icons/icon-email.png" alt="ICON">
+						</div>
+
+						<div class="bor8 m-b-20 how-pos4-parent">
+							<input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="tel" name="telefono"
+								placeholder="Tu Teléfono o WhatsApp">
+							<img class="how-pos4 pointer-none" src="~/images/icons/icon-email.png" alt="ICON">
+						</div>
+
+						<div class="bor8 m-b-30">
+							<textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="mensaje"
+								placeholder="¿Cómo podemos ayudarte? Cuéntanos sobre el pastel de tus sueños..."
+								required></textarea>
+						</div>
+
+						<button class="flex-c-m stext-101 cl0 size-121 bor1 hov-btn3 p-lr-15 trans-04 pointer"
+							style="background-color: #ff91c7; border-color: #ff91c7;">
+							Enviar Mensaje
+						</button>
+					</form>
+				</div>
+
+				<div class="size-210 bor10 flex-w flex-col-m p-lr-93 p-tb-30 p-lr-15-lg w-full-md"
+					style="background-color: #fff;">
+					<div class="flex-w w-full p-b-42">
+						<span class="fs-18 txt-center size-211" style="color: #ff91c7;">
+							<span class="lnr lnr-map-marker"></span>
+						</span>
+
+						<div class="size-212 p-t-2">
+							<span class="mtext-110 cl2">
+								Dirección
+							</span>
+
+							<p class="stext-115 cl6 size-213 p-t-18">
+								Av. Jaime Mendoza 456<br>
+								Sucre, Chuquisaca<br>
+								Bolivia
+							</p>
+						</div>
+					</div>
+
+					<div class="flex-w w-full p-b-42">
+						<span class="fs-18 txt-center size-211" style="color: #ff91c7;">
+							<span class="lnr lnr-phone-handset"></span>
+						</span>
+
+						<div class="size-212 p-t-2">
+							<span class="mtext-110 cl2">
+								Hablemos
+							</span>
+
+							<p class="stext-115 size-213 p-t-18" style="color: #ff91c7;">
+								(+591) 4 645-7890
+							</p>
+							<p class="stext-115 size-213 p-t-5" style="color: #ff91c7;">
+								WhatsApp: +591 4645-7890
+							</p>
+						</div>
+					</div>
+
+					<div class="flex-w w-full p-b-42">
+						<span class="fs-18 txt-center size-211" style="color: #ff91c7;">
+							<span class="lnr lnr-envelope"></span>
+						</span>
+
+						<div class="size-212 p-t-2">
+							<span class="mtext-110 cl2">
+								Email
+							</span>
+
+							<p class="stext-115 size-213 p-t-18" style="color: #ff91c7;">
+								pedidos@pasteleriacarmen.com
+							</p>
+							<p class="stext-115 size-213 p-t-5" style="color: #ff91c7;">
+								info@pasteleriacarmen.com
+							</p>
+						</div>
+					</div>
+
+					<div class="flex-w w-full">
+						<span class="fs-18 txt-center size-211" style="color: #ff91c7;">
+							<span class="lnr lnr-clock"></span>
+						</span>
+
+						<div class="size-212 p-t-2">
+							<span class="mtext-110 cl2">
+								Horario de Atención
+							</span>
+
+							<p class="stext-115 cl6 size-213 p-t-18">
+								Lunes a Sábado: 8:00 AM - 8:00 PM<br>
+								Domingos: 9:00 AM - 2:00 PM
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Additional Info Section -->
+			<div class="row p-t-80">
+				<div class="col-12">
+					<h3 class="mtext-111 cl2 p-b-40 txt-center">
+						¿Cómo Hacer tu Pedido?
+					</h3>
+				</div>
+
+				<div class="col-md-4 p-b-30">
+					<div class="txt-center p-lr-20 p-all-30" style="background-color: #fff; border-radius: 10px;">
+						<div class="fs-60 m-b-20" style="color: #ff91c7;">
+							<i class="fa fa-phone"></i>
+						</div>
+						<h4 class="mtext-109 cl2 p-b-10">
+							1. Llámanos
+						</h4>
+						<p class="stext-113 cl6">
+							Contáctanos por teléfono o WhatsApp para contarnos sobre tu pedido especial.
+						</p>
+					</div>
+				</div>
+
+				<div class="col-md-4 p-b-30">
+					<div class="txt-center p-lr-20 p-all-30" style="background-color: #fff; border-radius: 10px;">
+						<div class="fs-60 m-b-20" style="color: #ff91c7;">
+							<i class="fa fa-comments"></i>
+						</div>
+						<h4 class="mtext-109 cl2 p-b-10">
+							2. Personaliza
+						</h4>
+						<p class="stext-113 cl6">
+							Trabajamos contigo para diseñar el pastel perfecto según tus necesidades.
+						</p>
+					</div>
+				</div>
+
+				<div class="col-md-4 p-b-30">
+					<div class="txt-center p-lr-20 p-all-30" style="background-color: #fff; border-radius: 10px;">
+						<div class="fs-60 m-b-20" style="color: #ff91c7;">
+							<i class="fa fa-birthday-cake"></i>
+						</div>
+						<h4 class="mtext-109 cl2 p-b-10">
+							3. Disfruta
+						</h4>
+						<p class="stext-113 cl6">
+							Recoge tu pedido en nuestra tienda o solicita delivery a domicilio.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Social Media Section -->
+			<div class="row p-t-60">
+				<div class="col-12 txt-center">
+					<h4 class="mtext-109 cl2 p-b-30">
+						Síguenos en Redes Sociales
+					</h4>
+					<div class="flex-c-m">
+						<a href="https://facebook.com/pasteleria.carmen" class="fs-30 m-lr-15 trans-04"
+							style="color: #ff91c7;">
+							<i class="fa fa-facebook"></i>
+						</a>
+						<a href="https://instagram.com/pasteleria.carmen" class="fs-30 m-lr-15 trans-04"
+							style="color: #ff91c7;">
+							<i class="fa fa-instagram"></i>
+						</a>
+						<a href="https://wa.me/59146457890" class="fs-30 m-lr-15 trans-04" style="color: #ff91c7;">
+							<i class="fa fa-whatsapp"></i>
+						</a>
+						<a href="https://tiktok.com/pasteleria.carmen" class="fs-30 m-lr-15 trans-04"
+							style="color: #ff91c7;">
+							<i class="fab fa-tiktok"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<!-- Map -->
+	<div class="map">
+		<div class="size-303" id="google_map" data-map-x="-19.0333" data-map-y="-65.2627"
+			data-pin="~/images/icons/pin.png" data-scrollwhell="0" data-draggable="1" data-zoom="15"></div>
+	</div>
+
+</section>

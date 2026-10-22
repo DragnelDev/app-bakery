@@ -1,0 +1,248 @@
+/* ==================================================
+   COLORES ROSA PARA PASTELERÍA
+   ================================================== */
+
+/* Color principal rosa pastel */
+:root {
+  --rosa-pastel: #FFB6C1;
+  --rosa-claro: #FFE4E9;
+  --rosa-medio: #FF8FA3;
+  --rosa-oscuro: #FF69B4;
+  --rosa-suave: #FFF0F3;
+}
+
+/* Fondos principales */
+body {
+  background-color: #FFF0F3; /* Rosa muy suave */
+}
+
+.bg0 {
+  background-color: #FFF5F7; /* Blanco rosado */
+}
+
+.bg1 {
+  background-color: #FFB6C1; /* Rosa pastel */
+}
+
+.bg2 {
+  background-color: #FFE4E9; /* Rosa muy claro */
+}
+
+.bg3 {
+  background-color: #FF8FA3; /* Rosa medio */
+}
+
+.bg6 {
+  background-color: #FFF0F3; /* Rosa suave */
+}
+
+.bg7 {
+  background-color: #FF69B4; /* Rosa más intenso */
+}
+
+.bg8 {
+  background-color: #FFE4E9; /* Rosa claro */
+}
+
+.bg9 {
+  background-color: rgba(255, 182, 193, 0.9); /* Rosa pastel con transparencia */
+}
+
+/* Header y navegación */
+.top-bar {
+  background-color: #FF8FA3; /* Rosa medio */
+}
+
+.wrap-menu-desktop {
+  background-color: #FFB6C1; /* Rosa pastel */
+}
+
+.header-v2 .wrap-menu-desktop,
+.header-v4 .wrap-menu-desktop {
+  background-color: #FFE4E9; /* Rosa muy claro */
+}
+
+.header-v3 .wrap-menu-desktop {
+  background-color: rgba(255, 182, 193, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Menú fijo */
+.fix-menu-desktop .wrap-menu-desktop {
+  background-color: rgba(255, 230, 240, 0.98);
+  box-shadow: 0 0px 3px 0px rgba(255, 105, 180, 0.3);
+}
+
+.header-v3 .fix-menu-desktop .wrap-menu-desktop {
+  background-color: #FF8FA3;
+  border-color: #FF8FA3;
+}
+
+/* Menú móvil */
+.wrap-header-mobile {
+  background-color: #FFE4E9;
+  box-shadow: 0 0px 3px 0px rgba(255, 105, 180, 0.3);
+}
+
+.main-menu-m {
+  background-color: #FFB6C1;
+}
+
+.menu-mobile {
+  background-color: #FFF5F7;
+}
+
+/* Botones y elementos interactivos */
+.btn-back-to-top {
+  background-color: #FF69B4;
+}
+
+.btn-back-to-top:hover {
+  background-color: #FF1493;
+}
+
+/* Sidebar y carrito */
+.sidebar,
+.header-cart {
+  background-color: #FFF5F7;
+}
+
+/* Loader */
+.loader05 {
+  border: 4px solid #FFB6C1;
+}
+
+/* Colores de texto complementarios */
+.cl1 {
+  color: #FF69B4; /* Rosa intenso para textos destacados */
+}
+
+/* Hover effects */
+.main-menu > li:hover > a,
+.sub-menu > li:hover > a {
+  color: #FF69B4;
+}
+
+.right-top-bar a:hover {
+  color: #FFB6C1;
+}
+
+/* Íconos y notificaciones */
+.icon-header-noti::after {
+  background-color: #FF69B4;
+}
+
+/* Búsqueda */
+.modal-search-header {
+  background-color: rgba(255, 240, 243, 0.95);
+}
+
+.wrap-search-header {
+  background: #FFF5F7;
+  border: 2px solid #FFE4E9;
+}
+
+.wrap-search-header button:hover {
+  color: #FF69B4;
+}
+
+/* Tabs y navegación */
+.tab01 .nav-link.active,
+.tab01 .nav-link:hover {
+  color: #FF69B4;
+  border-color: #FFB6C1;
+}
+
+/* Elementos activos */
+.main-menu > li.active-menu > a {
+  color: #FF69B4;
+}
+
+.active-pagination1,
+.how-pagination1:hover {
+  background-color: #FFB6C1;
+  border-color: #FFB6C1;
+}
+
+/* Filtros */
+.show-search,
+.show-filter {
+  background-color: #FFE4E9;
+  border-color: #FFB6C1;
+}
+
+.show-search::after,
+.show-filter::after {
+  background-color: #FFE4E9;
+  border-left: 1px solid #FFB6C1;
+  border-bottom: 1px solid #FFB6C1;
+}
+
+.show-search:hover:after,
+.show-filter:hover:after {
+  background-color: #FFB6C1;
+  border-color: #FF69B4;
+}
+
+.filter-link:hover,
+.filter-link-active {
+  color: #FF69B4;
+  border-bottom: 1px solid #FF69B4;
+}
+
+/* Botones Sweet Alert */
+.swal-button {
+  background-color: #FFB6C1;
+}
+
+.swal-button:hover,
+.swal-button:active {
+  background-color: #FF8FA3;
+}
+
+/* Select2 */
+.rs1-select2 .select2-container .select2-results__option[aria-selected="true"],
+.rs1-select2 .select2-container .select2-results__option--highlighted[aria-selected] {
+  background: #FFB6C1;
+}
+
+.rs1-select2 .select2-container--default .select2-selection--single .select2-selection__arrow:hover:after {
+  color: #FF69B4;
+}
+
+/* Input focus */
+.focus-input1 {
+  background-color: #FF8FA3;
+}
+
+/* Bloques y productos */
+.block1-txt:hover {
+  background-color: rgba(255, 182, 193, 0.9);
+}
+
+/* Etiquetas */
+.label-new::after {
+  background-color: #FF69B4;
+}
+
+/* Fondos alternativos */
+.bgwhite {
+  background-color: #FFF5F7;
+}
+
+/* Hover buttons */
+.hov-btn3:hover,
+.hov-btn3:hover i {
+  border-color: #FFB6C1;
+  background-color: #FFB6C1;
+}
+
+.hov-tag1:hover {
+  color: #FF69B4;
+  border-color: #FF69B4;
+}
+
+/* Overlay */
+.hov-ovelay1:hover:after {
+  background: rgba(255, 182, 193, 0.9);
+}

@@ -1,0 +1,469 @@
+@model WebPasteleria.Models.Pedido
+
+@{
+    ViewBag.Title = "Detalle del Pedido";
+    Layout = "/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    var detalles = ViewBag.Detalles as List<WebPasteleria.Models.DetallePedido>;
+    var seguimientos = ViewBag.Seguimientos as List<WebPasteleria.Models.SeguimientoPedido>;
+}
+
+<div class="detalle-pedido-container">
+    <!-- Header con acciones -->
+    <div class="card">
+        <div class="card-header">
+            <div class="header-left">
+                <a asp-action="Index" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                <h3 class="card-title">
+                    Pedido #@Model.CodigoSeguimiento
+                </h3>
+            </div>
+            <div class="header-right">
+                <button class="btn btn-secondary btn-sm" onclick="imprimirPedido()">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+                <a asp-action="ActualizarEstado" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                    <i class="fas fa-edit"></i> Cambiar Estado
+                </a>
+            </div>
+        </div>
+
+        <!-- Información del pedido en grid -->
+        <div class="pedido-grid">
+            <!-- Columna 1: Info del Cliente -->
+            <div class="info-section">
+                <h4><i class="fas fa-user"></i> Información del Cliente</h4>
+                <div class="info-content">
+                    <div class="info-row">
+                        <span class="label">Nombre:</span>
+                        <span class="value">@Model.NombreCliente</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Email:</span>
+                        <span class="value">@Model.EmailCliente</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Teléfono:</span>
+                        <span class="value">@Model.CelularCliente</span>
+                    </div>
+                    @if (Model.IdClienteNavigation != null)
+                    {
+                        <div class="info-row">
+                            <span class="label">CI:</span>
+                            <span class="value">@Model.IdClienteNavigation.CedulaIdentidad</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Columna 2: Info del Pedido -->
+            <div class="info-section">
+                <h4><i class="fas fa-shopping-cart"></i> Información del Pedido</h4>
+                <div class="info-content">
+                    <div class="info-row">
+                        <span class="label">Código:</span>
+                        <span class="value codigo">@Model.CodigoSeguimiento</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Fecha de Pedido:</span>
+                        <span class="value">@Model.FechaPedido?.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Fecha de Entrega:</span>
+                        <span class="value">@Model.FechaEntrega?.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Tipo de Entrega:</span>
+                        <span class="value">
+                            @if (Model.TipoEntrega == "RECOGER")
+                            {
+                                <span class="badge badge-info"><i class="fas fa-store"></i> Recoger en Tienda</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-primary"><i class="fas fa-truck"></i> Delivery</span>
+                            }
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Método de Pago:</span>
+                        <span class="value">@Model.MetodoPagoNavigation?.Nombre</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna 3: Estado -->
+            <div class="info-section">
+                <h4><i class="fas fa-info-circle"></i> Estado del Pedido</h4>
+                <div class="info-content">
+                    <div class="estado-actual">
+                        @{
+                            var estadoClass = "";
+                            var estadoTexto = "";
+                            var estadoIcono = "";
+                            
+                            switch (Model.EstadoPedido)
+                            {
+                                case 0:
+                                    estadoClass = "estado-pendiente";
+                                    estadoTexto = "Pendiente";
+                                    estadoIcono = "fa-clock";
+                                    break;
+                                case 1:
+                                    estadoClass = "estado-confirmado";
+                                    estadoTexto = "Confirmado";
+                                    estadoIcono = "fa-check";
+                                    break;
+                                case 2:
+                                    estadoClass = "estado-preparacion";
+                                    estadoTexto = "En Preparación";
+                                    estadoIcono = "fa-utensils";
+                                    break;
+                                case 3:
+                                    estadoClass = "estado-listo";
+                                    estadoTexto = "Listo para Entregar";
+                                    estadoIcono = "fa-box";
+                                    break;
+                                case 4:
+                                    estadoClass = "estado-camino";
+                                    estadoTexto = "En Camino";
+                                    estadoIcono = "fa-truck";
+                                    break;
+                                case 5:
+                                    estadoClass = "estado-entregado";
+                                    estadoTexto = "Entregado";
+                                    estadoIcono = "fa-check-circle";
+                                    break;
+                                case 6:
+                                    estadoClass = "estado-cancelado";
+                                    estadoTexto = "Cancelado";
+                                    estadoIcono = "fa-times-circle";
+                                    break;
+                            }
+                        }
+                        <div class="estado-badge @estadoClass">
+                            <i class="fas @estadoIcono"></i>
+                            <span>@estadoTexto</span>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Observaciones))
+                    {
+                        <div class="info-row">
+                            <span class="label">Observaciones:</span>
+                            <span class="value">@Model.Observaciones</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Productos del pedido -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-box-open"></i> Productos del Pedido</h3>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Descuento</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (detalles != null && detalles.Any())
+                    {
+                        decimal subtotalGeneral = 0;
+                        @foreach (var detalle in detalles)
+                        {
+                            var subtotal = (detalle.PrecioUnitario * detalle.Cantidad) - (detalle.Descuento ?? 0);
+                            subtotalGeneral += subtotal;
+                            
+                            <tr>
+                                <td>
+                                    <div class="producto-info">
+                                        <strong>@detalle.IdProductoNavigation?.Nombre</strong>
+                                    </div>
+                                </td>
+                                <td>@detalle.PrecioUnitario.ToString("N2") Bs</td>
+                                <td><strong>@detalle.Cantidad</strong></td>
+                                <td>@((detalle.Descuento ?? 0).ToString("N2")) Bs</td>
+                                <td><strong class="precio">@subtotal.ToString("N2") Bs</strong></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-right"><strong>TOTAL:</strong></td>
+                        <td><strong class="total-pedido">@Model.Total?.ToString("N2") Bs</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Historial de seguimiento -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-history"></i> Historial de Seguimiento</h3>
+        </div>
+        <div class="timeline">
+            @if (seguimientos != null && seguimientos.Any())
+            {
+                @foreach (var seg in seguimientos)
+                {
+                    <div class="timeline-item">
+                        <div class="timeline-marker"></div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <strong>@seg.Fecha?.ToString("dd/MM/yyyy HH:mm")</strong>
+                                @{
+                                    var segEstadoClass = "";
+                                    var segEstadoTexto = "";
+                                    
+                                    switch (seg.EstadoPedido)
+                                    {
+                                        case 0: segEstadoClass = "badge-warning"; segEstadoTexto = "Pendiente"; break;
+                                        case 1: segEstadoClass = "badge-info"; segEstadoTexto = "Confirmado"; break;
+                                        case 2: segEstadoClass = "badge-primary"; segEstadoTexto = "En Preparación"; break;
+                                        case 3: segEstadoClass = "badge-secondary"; segEstadoTexto = "Listo"; break;
+                                        case 4: segEstadoClass = "badge-info"; segEstadoTexto = "En Camino"; break;
+                                        case 5: segEstadoClass = "badge-success"; segEstadoTexto = "Entregado"; break;
+                                        case 6: segEstadoClass = "badge-danger"; segEstadoTexto = "Cancelado"; break;
+                                    }
+                                }
+                                <span class="badge @segEstadoClass">@segEstadoTexto</span>
+                            </div>
+                            <p>@seg.Descripcion</p>
+                            @if (!string.IsNullOrEmpty(seg.UsuarioRegistro))
+                            {
+                                <small class="text-muted">Por: @seg.UsuarioRegistro</small>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-muted">No hay seguimientos registrados</p>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .detalle-pedido-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .card-header .header-left,
+    .card-header .header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .pedido-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 25px;
+    }
+
+    .info-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #dee2e6;
+    }
+
+    .info-section h4 {
+        margin: 0 0 15px 0;
+        color: #2c3e50;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-section h4 i {
+        color: #ff91c7;
+    }
+
+    .info-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .info-row .label {
+        font-weight: 600;
+        color: #666;
+        font-size: 14px;
+        min-width: 120px;
+    }
+
+    .info-row .value {
+        color: #2c3e50;
+        font-size: 14px;
+        text-align: right;
+        flex: 1;
+    }
+
+    .codigo {
+        font-family: monospace;
+        color: #ff91c7;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .estado-actual {
+        text-align: center;
+        padding: 20px 0;
+    }
+
+    .estado-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 30px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+    }
+
+    .estado-badge i {
+        font-size: 24px;
+    }
+
+    .estado-pendiente { background: #ffc107; }
+    .estado-confirmado { background: #17a2b8; }
+    .estado-preparacion { background: #007bff; }
+    .estado-listo { background: #6c757d; }
+    .estado-camino { background: #17a2b8; }
+    .estado-entregado { background: #28a745; }
+    .estado-cancelado { background: #dc3545; }
+
+    .producto-info strong {
+        color: #2c3e50;
+        font-size: 15px;
+    }
+
+    .precio {
+        color: #28a745;
+        font-size: 15px;
+    }
+
+    .total-pedido {
+        color: #ff91c7;
+        font-size: 20px;
+    }
+
+    tfoot tr {
+        background: #f8f9fa;
+        font-weight: bold;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    /* Timeline */
+    .timeline {
+        padding: 20px;
+        position: relative;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 40px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #dee2e6;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-left: 60px;
+        margin-bottom: 30px;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: 30px;
+        top: 5px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ff91c7;
+        border: 3px solid white;
+        box-shadow: 0 0 0 2px #dee2e6;
+    }
+
+    .timeline-content {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 3px solid #ff91c7;
+    }
+
+    .timeline-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .timeline-content p {
+        margin: 10px 0;
+        color: #555;
+    }
+
+    .timeline-content small {
+        color: #999;
+        font-size: 12px;
+    }
+
+    media print {
+        .btn, .card-header .header-right {
+            display: none !important;
+        }
+    }
+
+    media (max-width: 768px) {
+        .pedido-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .card-header .header-left,
+        .card-header .header-right {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        function imprimirPedido() {
+            window.print();
+        }
+    </script>
+}

@@ -1,0 +1,396 @@
+﻿@model WebPasteleria.Models.Pedido
+
+@{
+    Layout = null;
+    var detalles = ViewBag.Detalles as List<WebPasteleria.Models.DetallePedido>;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido @Model.CodigoSeguimiento - Pastelería Carmen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .ticket {
+            border: 2px solid #333;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px dashed #333;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 12px;
+            margin: 3px 0;
+        }
+
+        .section {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #999;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .info-label {
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        table th {
+            background: #f0f0f0;
+            padding: 8px;
+            text-align: left;
+            border-bottom: 2px solid #333;
+            font-size: 12px;
+        }
+
+        table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            font-size: 12px;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .total-section {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 2px solid #333;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .total-final {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #333;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 2px dashed #333;
+            font-size: 11px;
+        }
+
+        .estado-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .estado-pendiente { background: #fff3cd; color: #856404; }
+        .estado-confirmado { background: #d1ecf1; color: #0c5460; }
+        .estado-preparacion { background: #cfe2ff; color: #084298; }
+        .estado-listo { background: #e2e3e5; color: #383d41; }
+        .estado-camino { background: #d1ecf1; color: #0c5460; }
+        .estado-entregado { background: #d4edda; color: #155724; }
+        .estado-cancelado { background: #f8d7da; color: #721c24; }
+
+        .barcode {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .qr-placeholder {
+            text-align: center;
+            margin: 10px 0;
+            padding: 20px;
+            border: 1px dashed #999;
+            font-size: 11px;
+            color: #666;
+        }
+
+        media print {
+            body {
+                padding: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .ticket {
+                border: none;
+            }
+
+            page {
+                margin: 1cm;
+            }
+        }
+
+        .print-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #ff91c7;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botones de acción -->
+    <div class="print-buttons no-print">
+        <button class="btn btn-primary" onclick="window.print()">
+            🖨️ Imprimir
+        </button>
+        <button class="btn btn-secondary" onclick="window.close()">
+            ✖️ Cerrar
+        </button>
+    </div>
+
+    <!-- Ticket -->
+    <div class="ticket">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎂 PASTELERÍA CARMEN</h1>
+            <p>Av. Principal #123, Sucre - Bolivia</p>
+            <p>Tel: (591) 123-4567</p>
+            <p>Email: info@pasteleriacarmen.com</p>
+        </div>
+
+        <!-- Código de barras simulado -->
+        <div class="barcode">
+            @Model.CodigoSeguimiento
+        </div>
+
+        <!-- Información del pedido -->
+        <div class="section">
+            <div class="section-title">INFORMACIÓN DEL PEDIDO</div>
+            <div class="info-row">
+                <span class="info-label">Pedido N°:</span>
+                <span>@Model.CodigoSeguimiento</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Fecha:</span>
+                <span>@Model.FechaPedido?.ToString("dd/MM/yyyy HH:mm")</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Fecha Entrega:</span>
+                <span>@Model.FechaEntrega?.ToString("dd/MM/yyyy")</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Estado:</span>
+                <span>
+                    @{
+                        var estadoTexto = "";
+                        var estadoClass = "";
+                        
+                        switch (Model.EstadoPedido)
+                        {
+                            case 0: estadoTexto = "PENDIENTE"; estadoClass = "estado-pendiente"; break;
+                            case 1: estadoTexto = "CONFIRMADO"; estadoClass = "estado-confirmado"; break;
+                            case 2: estadoTexto = "EN PREPARACIÓN"; estadoClass = "estado-preparacion"; break;
+                            case 3: estadoTexto = "LISTO"; estadoClass = "estado-listo"; break;
+                            case 4: estadoTexto = "EN CAMINO"; estadoClass = "estado-camino"; break;
+                            case 5: estadoTexto = "ENTREGADO"; estadoClass = "estado-entregado"; break;
+                            case 6: estadoTexto = "CANCELADO"; estadoClass = "estado-cancelado"; break;
+                        }
+                    }
+                    <span class="estado-badge @estadoClass">@estadoTexto</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Información del cliente -->
+        <div class="section">
+            <div class="section-title">DATOS DEL CLIENTE</div>
+            <div class="info-row">
+                <span class="info-label">Nombre:</span>
+                <span>@Model.NombreCliente</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span>@Model.EmailCliente</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Teléfono:</span>
+                <span>@Model.CelularCliente</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Tipo Entrega:</span>
+                <span>
+                    @if (Model.TipoEntrega == "RECOGER")
+                    {
+                        <strong>🏪 RECOGER EN TIENDA</strong>
+                    }
+                    else
+                    {
+                        <strong>🚚 DELIVERY</strong>
+                    }
+                </span>
+            </div>
+        </div>
+
+        <!-- Productos -->
+        <div class="section">
+            <div class="section-title">DETALLE DEL PEDIDO</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cant.</th>
+                        <th>Producto</th>
+                        <th class="text-right">P. Unit.</th>
+                        <th class="text-right">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (detalles != null && detalles.Any())
+                    {
+                        @foreach (var detalle in detalles)
+                        {
+                            var subtotal = (detalle.PrecioUnitario * detalle.Cantidad) - (detalle.Descuento ?? 0);
+                            
+                            <tr>
+                                <td class="text-center"><strong>@detalle.Cantidad</strong></td>
+                                <td>@detalle.IdProductoNavigation?.Nombre</td>
+                                <td class="text-right">@detalle.PrecioUnitario.ToString("N2") Bs</td>
+                                <td class="text-right"><strong>@subtotal.ToString("N2") Bs</strong></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Total -->
+        <div class="total-section">
+            <div class="total-row total-final">
+                <span>TOTAL A PAGAR:</span>
+                <span>@Model.Total?.ToString("N2") Bs</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Método de Pago:</span>
+                <span>@Model.MetodoPagoNavigation?.Nombre</span>
+            </div>
+        </div>
+
+        <!-- Observaciones -->
+        @if (!string.IsNullOrEmpty(Model.Observaciones))
+        {
+            <div class="section">
+                <div class="section-title">OBSERVACIONES</div>
+                <p style="font-size: 12px;">@Model.Observaciones</p>
+            </div>
+        }
+
+        <!-- QR Code placeholder -->
+        <div class="qr-placeholder">
+            [QR CODE PARA SEGUIMIENTO]<br>
+            Escanea para rastrear tu pedido
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>¡GRACIAS POR TU COMPRA!</strong></p>
+            <p>Síguenos en redes sociales: PasteleriaCarmen</p>
+            <p>www.pasteleriacarmen.com</p>
+            <p style="margin-top: 10px; font-size: 10px;">
+                Este documento es válido como comprobante de compra<br>
+                Impreso el @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-abrir diálogo de impresión
+        window.onload = function() {
+            // Pequeño delay para que cargue bien
+            setTimeout(function() {
+                window.print();
+            }, 500);
+        };
+
+        // Cerrar ventana después de imprimir o cancelar
+        window.onafterprint = function() {
+            // Opcional: cerrar automáticamente
+            // window.close();
+        };
+    </script>
+</body>
+</html>

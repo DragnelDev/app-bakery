@@ -1,0 +1,602 @@
+﻿@model IEnumerable<WebPasteleria.Models.Pedido>
+
+@{
+    ViewBag.Title = "Gestión de Pedidos";
+    Layout = "/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-clipboard-list"></i> Lista de Pedidos
+        </h3>
+        <div class="header-actions">
+            <button class="btn btn-secondary btn-sm" id="btnExportar">
+                <i class="fas fa-file-excel"></i> Exportar
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters-section">
+        <div class="filters-row">
+            <div class="filter-group">
+                <label for="filterEstado">Estado</label>
+                <select id="filterEstado" class="filter-select">
+                    <option value="">Todos</option>
+                    <option value="0">Pendiente</option>
+                    <option value="1">Confirmado</option>
+                    <option value="2">En Preparación</option>
+                    <option value="3">Listo para Entregar</option>
+                    <option value="4">En Camino</option>
+                    <option value="5">Entregado</option>
+                    <option value="6">Cancelado</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filterFecha">Fecha</label>
+                <input type="date" id="filterFecha" class="filter-input">
+            </div>
+
+            <div class="filter-group">
+                <label for="filterBuscar">Buscar</label>
+                <input type="text" id="filterBuscar" class="filter-input" placeholder="Código, cliente, email...">
+            </div>
+
+            <div class="filter-group">
+                <label>&nbsp;</label>
+                <button class="btn btn-secondary btn-sm" onclick="limpiarFiltros()">
+                    <i class="fas fa-eraser"></i> Limpiar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas rápidas -->
+    <div class="stats-grid">
+        <div class="stat-card stat-pending">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <h4 id="statPendientes">0</h4>
+                <p>Pendientes</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-confirmed">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h4 id="statConfirmados">0</h4>
+                <p>Confirmados</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-preparing">
+            <div class="stat-icon">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <div class="stat-info">
+                <h4 id="statPreparacion">0</h4>
+                <p>En Preparación</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-ready">
+            <div class="stat-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="stat-info">
+                <h4 id="statListos">0</h4>
+                <p>Listos</p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-delivered">
+            <div class="stat-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="stat-info">
+                <h4 id="statEntregados">0</h4>
+                <p>Entregados Hoy</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de pedidos -->
+    <div class="table-responsive">
+        <table id="tablePedidos">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>Fecha Pedido</th>
+                    <th>Fecha Entrega</th>
+                    <th>Tipo Entrega</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="pedidosTableBody">
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var pedido in Model)
+                    {
+                        <tr data-pedido-id="@pedido.Id" 
+                            data-estado="@pedido.EstadoPedido"
+                            data-cliente="@pedido.NombreCliente"
+                            data-email="@pedido.EmailCliente"
+                            data-codigo="@pedido.CodigoSeguimiento"
+                            data-fecha="@pedido.FechaPedido?.ToString("yyyy-MM-dd")">
+                            <td>
+                                <strong class="codigo-pedido">@pedido.CodigoSeguimiento</strong>
+                            </td>
+                            <td>
+                                <div class="cliente-info">
+                                    <strong>@pedido.NombreCliente</strong>
+                                    <small>@pedido.EmailCliente</small>
+                                    <small><i class="fas fa-phone"></i> @pedido.CelularCliente</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="fecha-info">
+                                    <span>@pedido.FechaPedido?.ToString("dd/MM/yyyy")</span>
+                                    <small>@pedido.FechaPedido?.ToString("HH:mm")</small>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="fecha-entrega">
+                                    @pedido.FechaEntrega?.ToString("dd/MM/yyyy")
+                                </span>
+                            </td>
+                            <td>
+                                @if (pedido.TipoEntrega == "RECOGER")
+                                {
+                                    <span class="badge badge-info">
+                                        <i class="fas fa-store"></i> Recoger
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-primary">
+                                        <i class="fas fa-truck"></i> Delivery
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <strong class="precio">@pedido.Total?.ToString("N2") Bs</strong>
+                            </td>
+                            <td>
+                                @{
+                                    var estadoClass = "";
+                                    var estadoTexto = "";
+                                    var estadoIcono = "";
+                                    
+                                    switch (pedido.EstadoPedido)
+                                    {
+                                        case 0:
+                                            estadoClass = "badge-warning";
+                                            estadoTexto = "Pendiente";
+                                            estadoIcono = "fa-clock";
+                                            break;
+                                        case 1:
+                                            estadoClass = "badge-info";
+                                            estadoTexto = "Confirmado";
+                                            estadoIcono = "fa-check";
+                                            break;
+                                        case 2:
+                                            estadoClass = "badge-primary";
+                                            estadoTexto = "En Preparación";
+                                            estadoIcono = "fa-utensils";
+                                            break;
+                                        case 3:
+                                            estadoClass = "badge-secondary";
+                                            estadoTexto = "Listo";
+                                            estadoIcono = "fa-box";
+                                            break;
+                                        case 4:
+                                            estadoClass = "badge-info";
+                                            estadoTexto = "En Camino";
+                                            estadoIcono = "fa-truck";
+                                            break;
+                                        case 5:
+                                            estadoClass = "badge-success";
+                                            estadoTexto = "Entregado";
+                                            estadoIcono = "fa-check-circle";
+                                            break;
+                                        case 6:
+                                            estadoClass = "badge-danger";
+                                            estadoTexto = "Cancelado";
+                                            estadoIcono = "fa-times-circle";
+                                            break;
+                                        default:
+                                            estadoClass = "badge-secondary";
+                                            estadoTexto = "Desconocido";
+                                            estadoIcono = "fa-question";
+                                            break;
+                                    }
+                                }
+                                <span class="badge @estadoClass">
+                                    <i class="fas @estadoIcono"></i> @estadoTexto
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-icon btn-primary" 
+                                            onclick="verDetalle(@pedido.Id)" 
+                                            title="Ver Detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon btn-success" 
+                                            onclick="cambiarEstado(@pedido.Id, @pedido.EstadoPedido)" 
+                                            title="Cambiar Estado">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                    <button class="btn-icon btn-secondary" 
+                                            onclick="imprimirPedido(@pedido.Id)" 
+                                            title="Imprimir">
+                                        <i class="fas fa-print"></i>
+                                    </button>
+                                    @if (pedido.EstadoPedido < 5)
+                                    {
+                                        <button class="btn-icon btn-danger" 
+                                                onclick="cancelarPedido(@pedido.Id)" 
+                                                title="Cancelar">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <h3>No hay pedidos</h3>
+                                <p>Los pedidos aparecerán aquí cuando los clientes realicen compras</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    /* Filtros */
+    .filters-section {
+        padding: 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .filters-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-group label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 5px;
+    }
+
+    .filter-select,
+    .filter-input {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    /* Estadísticas */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 15px;
+        padding: 20px;
+        background: #f8f9fa;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border-left: 4px solid;
+    }
+
+    .stat-pending { border-left-color: #ffc107; }
+    .stat-confirmed { border-left-color: #17a2b8; }
+    .stat-preparing { border-left-color: #007bff; }
+    .stat-ready { border-left-color: #6c757d; }
+    .stat-delivered { border-left-color: #28a745; }
+
+    .stat-icon {
+        font-size: 36px;
+        opacity: 0.8;
+    }
+
+    .stat-pending .stat-icon { color: #ffc107; }
+    .stat-confirmed .stat-icon { color: #17a2b8; }
+    .stat-preparing .stat-icon { color: #007bff; }
+    .stat-ready .stat-icon { color: #6c757d; }
+    .stat-delivered .stat-icon { color: #28a745; }
+
+    .stat-info h4 {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        color: #2c3e50;
+    }
+
+    .stat-info p {
+        font-size: 13px;
+        color: #666;
+        margin: 0;
+    }
+
+    /* Tabla */
+    .codigo-pedido {
+        color: #ff91c7;
+        font-family: monospace;
+        font-size: 14px;
+    }
+
+    .cliente-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .cliente-info strong {
+        color: #2c3e50;
+    }
+
+    .cliente-info small {
+        color: #666;
+        font-size: 12px;
+    }
+
+    .fecha-info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .fecha-info span {
+        font-weight: 500;
+    }
+
+    .fecha-info small {
+        color: #999;
+        font-size: 12px;
+    }
+
+    .fecha-entrega {
+        font-weight: 600;
+        color: #ff91c7;
+    }
+
+    .precio {
+        color: #28a745;
+        font-size: 15px;
+    }
+
+    .badge-primary {
+        background: #007bff;
+        color: white;
+    }
+
+    /* Botones de acción */
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .btn-icon {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        font-size: 14px;
+    }
+
+    .btn-icon.btn-primary {
+        background: #007bff;
+    }
+
+    .btn-icon.btn-success {
+        background: #28a745;
+    }
+
+    .btn-icon.btn-secondary {
+        background: #6c757d;
+    }
+
+    .btn-icon.btn-danger {
+        background: #dc3545;
+    }
+
+    .btn-icon:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filters-row {
+            grid-template-columns: 1fr;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Calcular estadísticas
+        function calcularEstadisticas() {
+            const filas = document.querySelectorAll('#pedidosTableBody tr');
+            let pendientes = 0, confirmados = 0, preparacion = 0, listos = 0, entregados = 0;
+            const hoy = new Date().toISOString().split('T')[0];
+
+            filas.forEach(fila => {
+                const estado = parseInt(fila.dataset.estado);
+                const fecha = fila.dataset.fecha;
+
+                switch(estado) {
+                    case 0: pendientes++; break;
+                    case 1: confirmados++; break;
+                    case 2: preparacion++; break;
+                    case 3: listos++; break;
+                    case 5: 
+                        if (fecha === hoy) entregados++; 
+                        break;
+                }
+            });
+
+            document.getElementById('statPendientes').textContent = pendientes;
+            document.getElementById('statConfirmados').textContent = confirmados;
+            document.getElementById('statPreparacion').textContent = preparacion;
+            document.getElementById('statListos').textContent = listos;
+            document.getElementById('statEntregados').textContent = entregados;
+        }
+
+        // Filtrar pedidos
+        function filtrarPedidos() {
+            const filterEstado = document.getElementById('filterEstado').value;
+            const filterFecha = document.getElementById('filterFecha').value;
+            const filterBuscar = document.getElementById('filterBuscar').value.toLowerCase();
+
+            const filas = document.querySelectorAll('#pedidosTableBody tr');
+
+            filas.forEach(fila => {
+                const estado = fila.dataset.estado;
+                const fecha = fila.dataset.fecha;
+                const codigo = fila.dataset.codigo?.toLowerCase() || '';
+                const cliente = fila.dataset.cliente?.toLowerCase() || '';
+                const email = fila.dataset.email?.toLowerCase() || '';
+
+                let mostrar = true;
+
+                if (filterEstado && estado !== filterEstado) {
+                    mostrar = false;
+                }
+
+                if (filterFecha && fecha !== filterFecha) {
+                    mostrar = false;
+                }
+
+                if (filterBuscar && !codigo.includes(filterBuscar) && 
+                    !cliente.includes(filterBuscar) && !email.includes(filterBuscar)) {
+                    mostrar = false;
+                }
+
+                fila.style.display = mostrar ? '' : 'none';
+            });
+        }
+
+        function limpiarFiltros() {
+            document.getElementById('filterEstado').value = '';
+            document.getElementById('filterFecha').value = '';
+            document.getElementById('filterBuscar').value = '';
+            filtrarPedidos();
+        }
+
+        // Event listeners
+        document.getElementById('filterEstado')?.addEventListener('change', filtrarPedidos);
+        document.getElementById('filterFecha')?.addEventListener('change', filtrarPedidos);
+        document.getElementById('filterBuscar')?.addEventListener('input', filtrarPedidos);
+
+        // Funciones de acciones
+        function verDetalle(id) {
+            window.location.href = `/Admin/Pedidos/Detalle/${id}`;
+        }
+
+        function cambiarEstado(id, estadoActual) {
+            window.location.href = `/Admin/Pedidos/ActualizarEstado/${id}`;
+        }
+
+        function imprimirPedido(id) {
+            window.open(`/Admin/Pedidos/Imprimir/${id}`, '_blank');
+        }
+
+        function cancelarPedido(id) {
+            confirmDelete('¿Estás seguro de que deseas cancelar este pedido?', function() {
+                fetch(`/Admin/Pedidos/Cancelar/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('success', 'Éxito', 'Pedido cancelado correctamente');
+                        location.reload();
+                    } else {
+                        showNotification('error', 'Error', data.mensaje || 'No se pudo cancelar el pedido');
+                    }
+                })
+                .catch(error => {
+                    showNotification('error', 'Error', 'Ocurrió un error al cancelar el pedido');
+                });
+            });
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            calcularEstadisticas();
+        });
+    </script>
+}

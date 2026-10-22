@@ -1,0 +1,491 @@
+﻿@model WebPasteleria.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalle de Producto";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="details-header">
+    <div>
+        <h1><i class="fas fa-eye"></i> Detalle del Producto</h1>
+        <p class="subtitle">Información completa del producto</p>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-edit">
+            <i class="fa fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn-back">
+            <i class="fa fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="details-container">
+    <div class="details-card">
+        <div class="product-image-section">
+            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+            {
+                <img src="@Model.ImagenUrl" alt="@Model.Nombre" class="product-image" />
+            }
+            else
+            {
+                <div class="product-image-placeholder">
+                    <i class="fas fa-cake-candles"></i>
+                    <p>Sin imagen</p>
+                </div>
+            }
+
+            <div class="status-section">
+                @if (Model.Estado == 1)
+                {
+                    <span class="status-badge active">
+                        <i class="fas fa-check-circle"></i> Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="status-badge inactive">
+                        <i class="fas fa-times-circle"></i> Inactivo
+                    </span>
+                }
+
+                @if (Model.Stock > 10)
+                {
+                    <span class="stock-badge high">
+                        <i class="fas fa-boxes"></i> Stock Alto
+                    </span>
+                }
+                else if (Model.Stock > 0)
+                {
+                    <span class="stock-badge medium">
+                        <i class="fas fa-exclamation-triangle"></i> Stock Bajo
+                    </span>
+                }
+                else
+                {
+                    <span class="stock-badge low">
+                        <i class="fas fa-ban"></i> Agotado
+                    </span>
+                }
+            </div>
+        </div>
+
+        <div class="product-info-section">
+            <div class="info-header">
+                <h2>@Model.Nombre</h2>
+                <span class="code-badge">@Model.Codigo</span>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-list"></i> Categoría
+                    </div>
+                    <div class="info-value">
+                        @(Model.IdCategoriaNavigation?.Nombre ?? "Sin categoría")
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-balance-scale"></i> Unidad de Medida
+                    </div>
+                    <div class="info-value">
+                        @Model.UnidadMedida
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-dollar-sign"></i> Precio
+                    </div>
+                    <div class="info-value price">
+                        Bs. @Model.Precio.ToString("N2")
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-boxes"></i> Stock Disponible
+                    </div>
+                    <div class="info-value">
+                        @Model.Stock unidades
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-shapes"></i> Tipo de Producto
+                    </div>
+                    <div class="info-value">
+                        @Model.Tipo
+                    </div>
+                </div>
+
+                <div class="info-item full-width">
+                    <div class="info-label">
+                        <i class="fas fa-align-left"></i> Descripción
+                    </div>
+                    <div class="info-value">
+                        @(string.IsNullOrEmpty(Model.Descripcion) ? "Sin descripción" : Model.Descripcion)
+                    </div>
+                </div>
+            </div>
+
+            <div class="metadata-section">
+                <h3><i class="fas fa-info-circle"></i> Información de Registro</h3>
+                <div class="metadata-grid">
+                    <div class="metadata-item">
+                        <span class="metadata-label">Registrado por:</span>
+                        <span class="metadata-value">@Model.UsuarioRegistro</span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="metadata-label">Fecha de registro:</span>
+                        <span class="metadata-value">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .details-header h1 {
+            color: #c71585;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .details-header h1 i {
+            margin-right: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+            color: white;
+        }
+
+        .btn-back {
+            background: white;
+            color: #c71585;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #c71585;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: #c71585;
+            color: white;
+        }
+
+        .details-container {
+            max-width: 1000px;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 0;
+        }
+
+        .product-image-section {
+            background: linear-gradient(135deg, #ffc0cb 0%, #ffb6c1 100%);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .product-image {
+            width: 100%;
+            max-width: 280px;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 5px solid white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image-placeholder {
+            width: 100%;
+            max-width: 280px;
+            height: 280px;
+            border-radius: 15px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            color: #c71585;
+        }
+
+        .product-image-placeholder i {
+            font-size: 80px;
+        }
+
+        .product-image-placeholder p {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .status-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .status-badge {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge.active {
+            background: white;
+            color: #2ecc71;
+        }
+
+        .status-badge.inactive {
+            background: white;
+            color: #e74c3c;
+        }
+
+        .stock-badge {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .stock-badge.high {
+            background: white;
+            color: #2ecc71;
+        }
+
+        .stock-badge.medium {
+            background: white;
+            color: #f39c12;
+        }
+
+        .stock-badge.low {
+            background: white;
+            color: #e74c3c;
+        }
+
+        .product-info-section {
+            padding: 40px;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .info-header h2 {
+            color: #333;
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .code-badge {
+            background: #f0f0f0;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-label {
+            color: #999;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-label i {
+            color: #ff69b4;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .info-value.price {
+            color: #2ecc71;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .metadata-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .metadata-section h3 {
+            color: #555;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metadata-section h3 i {
+            color: #ff69b4;
+        }
+
+        .metadata-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .metadata-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .metadata-item:last-child {
+            border-bottom: none;
+        }
+
+        .metadata-label {
+            color: #777;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .metadata-value {
+            color: #333;
+            font-size: 14px;
+        }
+
+        (max-width: 968px) {
+            .details-card {
+                grid-template-columns: 1fr;
+            }
+
+            .product-image-section {
+                padding: 30px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        (max-width: 768px) {
+            .product-info-section {
+                padding: 25px;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .btn-edit,
+            .btn-back {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+}

@@ -1,0 +1,472 @@
+﻿@model IEnumerable<WebPasteleria.Models.Empleado>
+
+@{
+    ViewData["Title"] = "Empleados";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .pasteleria-container {
+        background: linear-gradient(135deg, #ffeef8 0%, #ffd4e5 100%);
+        min-height: 100vh;
+        padding: 30px 20px;
+    }
+    
+    .content-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .alert-message {
+        border-radius: 15px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+    }
+    
+    .alert-success {
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        border: 2px solid #c3e6cb;
+        color: #155724;
+    }
+    
+    .alert-error {
+        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+        border: 2px solid #f5c2c7;
+        color: #721c24;
+    }
+    
+    .header-section {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 20px rgba(255, 105, 180, 0.15);
+        border: 2px solid #ffb3d9;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    .title-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .title-icon {
+        font-size: 2.5rem;
+    }
+    
+    .header-section h1 {
+        color: #d63384;
+        font-weight: 700;
+        font-size: 2.2rem;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(214, 51, 132, 0.1);
+    }
+    
+    .btn-create {
+        background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+    
+    .search-section {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 20px rgba(255, 105, 180, 0.15);
+        border: 2px solid #ffb3d9;
+    }
+    
+    .search-form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    
+    .search-input {
+        flex: 1;
+        min-width: 250px;
+        padding: 12px 18px;
+        border: 2px solid #ffc0e0;
+        border-radius: 12px;
+        font-size: 1rem;
+        background-color: #fff5fb;
+    }
+    
+    .search-input:focus {
+        border-color: #ff69b4;
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(255, 105, 180, 0.25);
+    }
+    
+    .btn-search {
+        background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+        border: none;
+        color: white;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    }
+    
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+    }
+    
+    .btn-reset {
+        background: white;
+        border: 2px solid #ffb3d9;
+        color: #d63384;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-reset:hover {
+        background-color: #ffe0f0;
+        border-color: #ff69b4;
+    }
+    
+    .table-card {
+        background: white;
+        border-radius: 20px;
+        padding: 0;
+        box-shadow: 0 5px 20px rgba(255, 105, 180, 0.15);
+        border: 2px solid #ffb3d9;
+        overflow: hidden;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .custom-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    .custom-table thead {
+        background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    }
+    
+    .custom-table thead th {
+        color: white;
+        font-weight: 600;
+        padding: 18px 15px;
+        text-align: left;
+        border: none;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .custom-table thead th:first-child {
+        padding-left: 25px;
+    }
+    
+    .custom-table tbody tr {
+        transition: all 0.2s ease;
+        border-bottom: 1px solid #ffe0f0;
+    }
+    
+    .custom-table tbody tr:hover {
+        background-color: #fff5fb;
+    }
+    
+    .custom-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    
+    .custom-table tbody td {
+        padding: 16px 15px;
+        color: #666;
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+    
+    .custom-table tbody td:first-child {
+        padding-left: 25px;
+        font-weight: 600;
+        color: #d63384;
+    }
+    
+    .badge-estado {
+        display: inline-block;
+        padding: 5px 12px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .badge-activo {
+        background-color: #d4edda;
+        color: #155724;
+    }
+    
+    .badge-inactivo {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-action {
+        padding: 6px 14px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+        border: 2px solid;
+        display: inline-block;
+    }
+    
+    .btn-edit {
+        color: #0dcaf0;
+        border-color: #0dcaf0;
+        background-color: #e7f9fd;
+    }
+    
+    .btn-edit:hover {
+        background-color: #0dcaf0;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-details {
+        color: #6f42c1;
+        border-color: #6f42c1;
+        background-color: #f3e8ff;
+    }
+    
+    .btn-details:hover {
+        background-color: #6f42c1;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-delete {
+        color: #dc3545;
+        border-color: #dc3545;
+        background-color: #ffe5e8;
+    }
+    
+    .btn-delete:hover {
+        background-color: #dc3545;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .no-data {
+        text-align: center;
+        padding: 60px 20px;
+        color: #d63384;
+    }
+    
+    .no-data-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    
+    .no-data p {
+        font-size: 1.2rem;
+        margin: 0;
+    }
+    
+    .employee-count {
+        background: linear-gradient(135deg, #ffe0f0 0%, #ffc0e0 100%);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        color: #d63384;
+        font-size: 0.95rem;
+    }
+    
+    media (max-width: 768px) {
+        .header-section {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .header-section h1 {
+            font-size: 1.8rem;
+        }
+        
+        .btn-create {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .search-form {
+            flex-direction: column;
+        }
+        
+        .search-input {
+            min-width: 100%;
+        }
+        
+        .btn-search,
+        .btn-reset {
+            width: 100%;
+        }
+        
+        .custom-table {
+            font-size: 0.85rem;
+        }
+        
+        .custom-table thead th,
+        .custom-table tbody td {
+            padding: 12px 10px;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-action {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="pasteleria-container">
+    <div class="content-wrapper">
+        @if (TempData["Mensaje"] != null)
+        {
+            <div class="alert-message alert-success">
+                <span>✓</span>
+                <span>@TempData["Mensaje"]</span>
+            </div>
+        }
+        
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-message alert-error">
+                <span>⚠️</span>
+                <span>@TempData["Error"]</span>
+            </div>
+        }
+        
+        <div class="header-section">
+            <div class="title-section">
+                <span class="title-icon">👥</span>
+                <h1>Empleados</h1>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                @if (Model != null && Model.Any())
+                {
+                    <span class="employee-count">Total: @Model.Count() empleados</span>
+                }
+                <a asp-action="Create" class="btn-create">
+                    ✨ Nuevo Empleado
+                </a>
+            </div>
+        </div>
+        
+        <div class="search-section">
+            <form method="get" asp-action="Search" class="search-form">
+                <input type="text" name="searchTerm" class="search-input" placeholder="Buscar por nombre, cédula o email..." />
+                <button type="submit" class="btn-search">🔍 Buscar</button>
+                <a asp-action="Index" class="btn-reset">↻ Limpiar</a>
+            </form>
+        </div>
+        
+        <div class="table-card">
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Nombre Completo</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Cargo</th>
+                                <th>Estado</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.CedulaIdentidad)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Nombre) @Html.DisplayFor(modelItem => item.ApellidoPaterno) @Html.DisplayFor(modelItem => item.ApellidoMaterno)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Celular)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Cargo)</td>
+                                    <td>
+                                        @if (item.Estado == 1)
+                                        {
+                                            <span class="badge-estado badge-activo">✓ Activo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-estado badge-inactivo">✕ Inactivo</span>
+                                        }
+                                    </td>
+                                    <td>@Html.DisplayFor(modelItem => item.FechaRegistro)</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn-action btn-edit">✏️ Editar</a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn-action btn-details">👁️ Ver</a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn-action btn-delete">🗑️ Eliminar</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="no-data">
+                    <div class="no-data-icon">🧁</div>
+                    <p>No hay empleados registrados aún</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

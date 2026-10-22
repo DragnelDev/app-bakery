@@ -1,0 +1,104 @@
+﻿@{
+    ViewData["Title"] = "Login Cliente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dev-container">
+    <div class="dev-card">
+        <h1><i class="fas fa-user-lock"></i> Login de Cliente</h1>
+        <p class="dev-subtitle">Esta sección está en desarrollo</p>
+
+        <div class="dev-message">
+            <i class="fas fa-tools"></i>
+            <h2>¡Próximamente podrás acceder a tu cuenta!</h2>
+            <p>Estamos trabajando para brindarte una mejor experiencia.</p>
+        </div>
+
+        <a asp-controller="Home" asp-action="Index"
+            class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" style="color: #fff;">
+            <i class="fa fa-arrow-left"></i> Volver al inicio
+        </a>
+        
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        body {
+            background: #ffe4f1 !important;
+            /* FONDO ROSA SUAVE */
+        }
+
+        .dev-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 70vh;
+            padding: 30px;
+        }
+
+        .dev-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .dev-card h1 {
+            color: #c71585;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .dev-subtitle {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .dev-message {
+            background: #ffecf5;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #ff69b4;
+            margin-bottom: 25px;
+        }
+
+        .dev-message i {
+            font-size: 40px;
+            color: #ff1493;
+            margin-bottom: 10px;
+        }
+
+        .dev-message h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #c71585;
+            font-weight: 700;
+        }
+
+        .dev-message p {
+            margin-top: 8px;
+            color: #555;
+        }
+
+        .btn-volver {
+            background: #c71585;
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: .3s;
+        }
+
+        .btn-volver:hover {
+            background: #a0136d;
+        }
+    </style>
+}

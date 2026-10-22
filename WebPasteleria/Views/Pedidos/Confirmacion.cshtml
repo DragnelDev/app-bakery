@@ -1,0 +1,219 @@
+﻿@model WebPasteleria.Models.Pedido
+
+@{
+    ViewData["Title"] = "Pedido Confirmado - Pastelería Carmen";
+    var detalles = ViewBag.Detalles as List<WebPasteleria.Models.DetallePedido>;
+}
+
+<section style="background-color: #ffe4f0; min-height: 100vh;">
+    <div class="container p-t-75 p-b-85">
+        <!-- Mensaje de Éxito -->
+        <div class="text-center m-b-50">
+            <div style="font-size: 80px; color: #28a745;">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <h2 class="ltext-105 cl2 m-t-20" style="color: #ff91c7;">
+                ¡Pedido Realizado con Éxito!
+            </h2>
+            <p class="stext-113 cl6 m-t-10">
+                Gracias por tu compra. Tu pedido ha sido registrado correctamente.
+            </p>
+        </div>
+
+        <div class="row">
+            <!-- Información del Pedido -->
+            <div class="col-lg-8 m-lr-auto">
+                <div class="bor10 p-lr-40 p-t-30 p-b-40 m-b-30" style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
+                    <h4 class="mtext-109 cl2 p-b-30">
+                        <i class="fa fa-receipt" style="color: #ff91c7;"></i> Detalles del Pedido
+                    </h4>
+
+                    <!-- Código de Seguimiento -->
+                    <div class="p-all-20 m-b-20" style="background-color: #fff5f8; border-radius: 8px; border: 2px dashed #ff91c7;">
+                        <div class="text-center">
+                            <p class="stext-111 cl6 m-b-10">Código de Seguimiento</p>
+                            <h3 class="ltext-103" style="color: #ff91c7; letter-spacing: 3px;">
+                                @Model.CodigoSeguimiento
+                            </h3>
+                            <p class="stext-112 cl6 m-t-10">
+                                <i class="fa fa-info-circle"></i> Guarda este código para rastrear tu pedido
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Información del Cliente -->
+                    <div class="row m-b-30">
+                        <div class="col-md-6 m-b-20">
+                            <h5 class="mtext-110 cl2 m-b-10">
+                                <i class="fa fa-user" style="color: #ff91c7;"></i> Cliente
+                            </h5>
+                            <p class="stext-113 cl6">
+                                <strong>Nombre:</strong> @Model.NombreCliente<br>
+                                <strong>Email:</strong> @Model.EmailCliente<br>
+                                <strong>Teléfono:</strong> @Model.CelularCliente
+                            </p>
+                        </div>
+
+                        <div class="col-md-6 m-b-20">
+                            <h5 class="mtext-110 cl2 m-b-10">
+                                <i class="fa fa-calendar" style="color: #ff91c7;"></i> Fechas
+                            </h5>
+                            <p class="stext-113 cl6">
+                                <strong>Pedido:</strong> @Model.FechaPedido?.ToString("dd/MM/yyyy HH:mm")<br>
+                                <strong>Entrega estimada:</strong> @Model.FechaEntrega?.ToString("dd/MM/yyyy")
+                            </p>
+                        </div>
+
+                        <div class="col-md-6 m-b-20">
+                            <h5 class="mtext-110 cl2 m-b-10">
+                                <i class="fa fa-truck" style="color: #ff91c7;"></i> Entrega
+                            </h5>
+                            <p class="stext-113 cl6">
+                                <strong>Tipo:</strong> @(Model.TipoEntrega == "RECOGER" ? "Recoger en Tienda" : "Entrega a Domicilio")<br>
+                                @if (Model.TipoEntrega == "RECOGER")
+                                {
+                                    <span>Av. Jaime Mendoza 456, Sucre</span>
+                                }
+                            </p>
+                        </div>
+
+                        <div class="col-md-6 m-b-20">
+                            <h5 class="mtext-110 cl2 m-b-10">
+                                <i class="fa fa-credit-card" style="color: #ff91c7;"></i> Pago
+                            </h5>
+                            <p class="stext-113 cl6">
+                                <strong>Método:</strong> @Model.MetodoPagoNavigation?.Nombre
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Productos -->
+                    <h5 class="mtext-110 cl2 m-b-20">
+                        <i class="fa fa-shopping-bag" style="color: #ff91c7;"></i> Productos
+                    </h5>
+                    <div class="wrap-table-shopping-cart">
+                        <table class="table-shopping-cart">
+                            <thead>
+                                <tr class="table_head">
+                                    <th class="column-1">Producto</th>
+                                    <th class="column-3">Precio</th>
+                                    <th class="column-4">Cantidad</th>
+                                    <th class="column-5">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (detalles != null)
+                                {
+                                    @foreach (var detalle in detalles)
+                                    {
+                                        <tr class="table_row">
+                                            <td class="column-2">@detalle.IdProductoNavigation?.Nombre</td>
+                                            <td class="column-3">@detalle.PrecioUnitario.ToString("N2") Bs</td>
+                                            <td class="column-4">@detalle.Cantidad</td>
+                                            <td class="column-5">@((detalle.Cantidad * detalle.PrecioUnitario).ToString("N2")) Bs</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm m-t-30">
+                        <div class="flex-w flex-m">
+                            <h5 class="mtext-110 cl2">Total:</h5>
+                        </div>
+                        <div class="flex-w flex-m">
+                            <h4 class="mtext-110" style="color: #ff91c7;">@Model.Total?.ToString("N2") Bs</h4>
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    @if (!string.IsNullOrWhiteSpace(Model.Observaciones))
+                    {
+                        <div class="m-t-20">
+                            <h5 class="mtext-110 cl2 m-b-10">
+                                <i class="fa fa-comment" style="color: #ff91c7;"></i> Observaciones
+                            </h5>
+                            <p class="stext-113 cl6">@Model.Observaciones</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Próximos Pasos -->
+                <div class="bor10 p-lr-40 p-t-30 p-b-40 m-b-30" style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
+                    <h4 class="mtext-109 cl2 p-b-20">
+                        <i class="fa fa-list-ol" style="color: #ff91c7;"></i> ¿Qué sigue?
+                    </h4>
+
+                    <div class="row">
+                        <div class="col-md-4 text-center m-b-20">
+                            <div style="font-size: 50px; color: #ff91c7;">
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                            <h6 class="stext-110 cl2 m-t-10">1. Confirmación</h6>
+                            <p class="stext-112 cl6">
+                                Recibirás un email de confirmación con los detalles de tu pedido
+                            </p>
+                        </div>
+
+                        <div class="col-md-4 text-center m-b-20">
+                            <div style="font-size: 50px; color: #ff91c7;">
+                                <i class="fa fa-cogs"></i>
+                            </div>
+                            <h6 class="stext-110 cl2 m-t-10">2. Preparación</h6>
+                            <p class="stext-112 cl6">
+                                Prepararemos tu pedido con ingredientes frescos
+                            </p>
+                        </div>
+
+                        <div class="col-md-4 text-center m-b-20">
+                            <div style="font-size: 50px; color: #ff91c7;">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <h6 class="stext-110 cl2 m-t-10">3. Entrega</h6>
+                            <p class="stext-112 cl6">
+                                @(Model.TipoEntrega == "RECOGER" ? "Recoge tu pedido en nuestra tienda" : "Entregaremos tu pedido en la dirección indicada")
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="text-center">
+                    <a asp-controller="Pedidos" asp-action="Seguimiento" asp-route-codigo="@Model.CodigoSeguimiento"
+                       class="flex-c-m stext-101 cl0 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-r-10 m-b-10"
+                       style="background-color: #ff91c7; border-color: #ff91c7; display: inline-block;">
+                        <i class="fa fa-search"></i> Rastrear Pedido
+                    </a>
+
+                    <a asp-controller="Home" asp-action="Index"
+                       class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-b-10"
+                       style="border-color: #ff91c7; color: #ff91c7; display: inline-block;">
+                        <i class="fa fa-home"></i> Volver al Inicio
+                    </a>
+
+                    <button onclick="window.print()"
+                            class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-b-10"
+                            style="border-color: #ff91c7; color: #ff91c7; display: inline-block;">
+                        <i class="fa fa-print"></i> Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información de Contacto -->
+        <div class="row m-t-50">
+            <div class="col-12 text-center">
+                <div class="p-all-30" style="background-color: #fff; border-radius: 10px;">
+                    <h5 class="mtext-110 cl2 m-b-20">¿Necesitas ayuda?</h5>
+                    <p class="stext-113 cl6">
+                        <i class="fa fa-phone" style="color: #ff91c7;"></i> (+591) 4 645-7890 |
+                        <i class="fa fa-whatsapp" style="color: #25D366;"></i> WhatsApp: +591 4645-7890 |
+                        <i class="fa fa-envelope" style="color: #ff91c7;"></i> pedidos@pasteleriacarmen.com
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

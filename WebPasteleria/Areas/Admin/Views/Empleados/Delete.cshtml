@@ -1,0 +1,376 @@
+﻿@model WebPasteleria.Models.Empleado
+
+@{
+    ViewData["Title"] = "Eliminar Empleado";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .pasteleria-container {
+        background: linear-gradient(135deg, #ffeef8 0%, #ffd4e5 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+    
+    .delete-card {
+        background: white;
+        border-radius: 25px;
+        box-shadow: 0 10px 40px rgba(220, 53, 69, 0.2);
+        padding: 0;
+        max-width: 900px;
+        margin: 0 auto;
+        border: 3px solid #ffb3d9;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        padding: 35px 40px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .header-icon {
+        font-size: 3.5rem;
+        margin-bottom: 15px;
+        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    }
+    
+    .card-header h1 {
+        color: white;
+        font-weight: 700;
+        font-size: 2.3rem;
+        margin: 0 0 10px 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-header h3 {
+        color: rgba(255, 255, 255, 0.95);
+        font-weight: 500;
+        font-size: 1.3rem;
+        margin: 0;
+    }
+    
+    .warning-banner {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-left: 5px solid #ffc107;
+        border-right: 5px solid #ffc107;
+        padding: 20px 30px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #856404;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .warning-icon {
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+    
+    .card-body {
+        padding: 40px;
+    }
+    
+    .employee-name-banner {
+        background: linear-gradient(135deg, #ffe0f0 0%, #ffc0e0 100%);
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 30px;
+        border: 2px solid #ffb3d9;
+    }
+    
+    .employee-name-banner h2 {
+        color: #d63384;
+        font-weight: 700;
+        font-size: 1.8rem;
+        margin: 0;
+    }
+    
+    .info-section {
+        margin-bottom: 30px;
+    }
+    
+    .section-title {
+        color: #d63384;
+        font-weight: 700;
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ffe0f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+    
+    .info-item {
+        background: #fff5fb;
+        padding: 20px;
+        border-radius: 15px;
+        border: 2px solid #ffe0f0;
+    }
+    
+    .info-item.full-width {
+        grid-column: 1 / -1;
+    }
+    
+    .info-label {
+        color: #d63384;
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .info-value {
+        color: #333;
+        font-size: 1.1rem;
+        font-weight: 500;
+        word-break: break-word;
+    }
+    
+    .badge-estado {
+        display: inline-block;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .badge-activo {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .badge-inactivo {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .action-section {
+        background: #fff0f3;
+        padding: 30px;
+        border-radius: 15px;
+        border: 2px solid #ffccd5;
+        margin-top: 35px;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-action {
+        padding: 14px 35px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+    
+    .btn-delete {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    }
+    
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+        background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    }
+    
+    .btn-cancel {
+        background: white;
+        color: #6c757d;
+        border: 2px solid #dee2e6;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+    }
+    
+    .btn-cancel:hover {
+        background: #f8f9fa;
+        border-color: #adb5bd;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        color: #6c757d;
+        text-decoration: none;
+    }
+    
+    .confirmation-text {
+        text-align: center;
+        color: #721c24;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+    }
+    
+    media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        .card-header {
+            padding: 25px 20px;
+        }
+        
+        .card-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .warning-banner {
+            padding: 15px 20px;
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="pasteleria-container">
+    <div class="delete-card">
+        <div class="card-header">
+            <div class="header-icon">⚠️</div>
+            <h1>Eliminar Empleado</h1>
+            <h3>¿Está seguro que desea eliminar este registro?</h3>
+        </div>
+        
+        <div class="warning-banner">
+            <span class="warning-icon">⚠️</span>
+            <span>Esta acción no se puede deshacer. El empleado será eliminado permanentemente.</span>
+        </div>
+        
+        <div class="card-body">
+            <div class="employee-name-banner">
+                <h2>@Model.Nombre @Model.ApellidoPaterno @Model.ApellidoMaterno</h2>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">
+                    <span>📋</span> Información Personal
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.CedulaIdentidad)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.CedulaIdentidad)</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.FechaNacimiento)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.FechaNacimiento)</div>
+                    </div>
+                    <div class="info-item full-width">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.Direccion)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.Direccion)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">
+                    <span>📞</span> Información de Contacto
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.Celular)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.Celular)</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.Email)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.Email)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">
+                    <span>💼</span> Información Laboral
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.Cargo)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.Cargo)</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.Estado)</span>
+                        <div class="info-value">
+                            @if (Model.Estado == 1)
+                            {
+                                <span class="badge-estado badge-activo">✓ Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge-estado badge-inactivo">✕ Inactivo</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="section-title">
+                    <span>📝</span> Información de Registro
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.UsuarioRegistro)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.UsuarioRegistro)</div>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">@Html.DisplayNameFor(model => model.FechaRegistro)</span>
+                        <div class="info-value">@Html.DisplayFor(model => model.FechaRegistro)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-section">
+                <div class="confirmation-text">
+                    ¿Confirma que desea eliminar este empleado?
+                </div>
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="action-buttons">
+                        <button type="submit" class="btn-action btn-delete">
+                            🗑️ Sí, Eliminar
+                        </button>
+                        <a asp-action="Index" class="btn-action btn-cancel">
+                            ← Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

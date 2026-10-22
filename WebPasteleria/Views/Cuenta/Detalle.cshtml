@@ -1,0 +1,337 @@
+﻿@model WebPasteleria.Models.Producto
+
+@{
+    ViewData["Title"] = "Editar Producto";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="form-header">
+    <div>
+        <h1><i class="fas fa-edit"></i> Editar Producto</h1>
+        <p class="subtitle">Modifica la información del producto</p>
+    </div>
+    <a asp-action="Index" class="btn-back">
+        <i class="fa fa-arrow-left"></i> Volver
+    </a>
+</div>
+
+<div class="form-container">
+    <div class="form-card">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="alert-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="UsuarioRegistro" />
+            <input type="hidden" asp-for="FechaRegistro" />
+            <input type="hidden" asp-for="Estado" />
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-barcode"></i> Código del Producto
+                    </label>
+                    <input asp-for="Codigo" class="form-input" placeholder="Ej: PROD-001" />
+                    <span asp-validation-for="Codigo" class="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tag"></i> Nombre del Producto
+                    </label>
+                    <input asp-for="Nombre" class="form-input" placeholder="Ej: Torta de Chocolate" />
+                    <span asp-validation-for="Nombre" class="error-message"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-list"></i> Categoría
+                    </label>
+                    <select asp-for="IdCategoria" class="form-select" asp-items="ViewBag.IdCategoria">
+                        <option value="" disabled>Seleccione una categoría</option>
+                    </select>
+                    <span asp-validation-for="IdCategoria" class="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-balance-scale"></i> Unidad de Medida
+                    </label>
+                    <input asp-for="UnidadMedida" class="form-input" placeholder="Ej: Unidad, Kg, Porción" />
+                    <span asp-validation-for="UnidadMedida" class="error-message"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-dollar-sign"></i> Precio (Bs.)
+                    </label>
+                    <input asp-for="Precio" type="number" step="0.01" class="form-input" placeholder="0.00" />
+                    <span asp-validation-for="Precio" class="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-boxes"></i> Stock Disponible
+                    </label>
+                    <input asp-for="Stock" type="number" class="form-input" placeholder="0" />
+                    <span asp-validation-for="Stock" class="error-message"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-shapes"></i> Tipo de Producto
+                    </label>
+                    <input asp-for="Tipo" class="form-input" placeholder="Ej: Pastel, Cupcake, Galleta" />
+                    <span asp-validation-for="Tipo" class="error-message"></span>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label">
+                    <i class="fas fa-align-left"></i> Descripción
+                </label>
+                <textarea asp-for="Descripcion" class="form-textarea" rows="4"
+                    placeholder="Describe el producto..."></textarea>
+                <span asp-validation-for="Descripcion" class="error-message"></span>
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label">
+                    <i class="fas fa-image"></i> URL de la Imagen
+                </label>
+                <input asp-for="ImagenUrl" class="form-input" placeholder="https://ejemplo.com/imagen.jpg" />
+                <span asp-validation-for="ImagenUrl" class="error-message"></span>
+                <small class="form-hint">Ingresa la URL de la imagen del producto</small>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn-submit">
+                    <i class="fa fa-save"></i> Guardar Cambios
+                </a>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="fa fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+@section Styles {
+    <style>
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .form-header h1 {
+            color: #c71585;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .form-header h1 i {
+            margin-right: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            background: white;
+            color: #c71585;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #c71585;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: #c71585;
+            color: white;
+        }
+
+        .form-container {
+            max-width: 900px;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #ff69b4;
+            font-size: 16px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-select {
+            cursor: pointer;
+            background: white;
+        }
+
+        .form-hint {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .alert-danger {
+            background: #ffebee;
+            color: #d32f2f;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+            padding-top: 25px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+            padding: 14px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        (max-width: 768px) {
+            .form-card {
+                padding: 25px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn-submit,
+            .btn-cancel {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+}

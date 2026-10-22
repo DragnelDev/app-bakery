@@ -1,0 +1,531 @@
+﻿@model WebPasteleria.Models.Cliente
+
+@{
+    ViewData["Title"] = "Detalle del Cliente";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="details-header">
+    <div>
+        <h1><i class="fas fa-user-circle"></i> Perfil del Cliente</h1>
+        <p class="subtitle">Información completa del cliente</p>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn-edit">
+            <i class="fa fa-edit"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn-back">
+            <i class="fa fa-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>
+
+<div class="details-container">
+    <div class="details-card">
+        <!-- SECCIÓN DE PERFIL -->
+        <div class="profile-section">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            
+            <div class="profile-name">
+                <h2>@Model.Nombre @Model.Apellido</h2>
+                <span class="ci-number">CI: @Model.CedulaIdentidad</span>
+            </div>
+
+            <div class="profile-badges">
+                @if (Model.TipoCliente == "VIP")
+                {
+                    <span class="tipo-badge vip">
+                        <i class="fas fa-crown"></i> Cliente VIP
+                    </span>
+                }
+                else if (Model.TipoCliente == "Frecuente")
+                {
+                    <span class="tipo-badge frecuente">
+                        <i class="fas fa-star"></i> Cliente Frecuente
+                    </span>
+                }
+                else
+                {
+                    <span class="tipo-badge regular">
+                        <i class="fas fa-user"></i> Cliente Regular
+                    </span>
+                }
+                
+                @if (Model.Estado == 1)
+                {
+                    <span class="estado-badge activo">
+                        <i class="fas fa-check-circle"></i> Activo
+                    </span>
+                }
+                else
+                {
+                    <span class="estado-badge inactivo">
+                        <i class="fas fa-times-circle"></i> Inactivo
+                    </span>
+                }
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE INFORMACIÓN -->
+        <div class="info-section">
+            <h3><i class="fas fa-address-card"></i> Información de Contacto</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-phone"></i> Celular
+                    </div>
+                    <div class="info-value">
+                        @if (!string.IsNullOrEmpty(Model.Celular))
+                        {
+                            <a href="tel:@Model.Celular">@Model.Celular</a>
+                        }
+                        else
+                        {
+                            <span class="no-data">No registrado</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-envelope"></i> Email
+                    </div>
+                    <div class="info-value">
+                        @if (!string.IsNullOrEmpty(Model.Email))
+                        {
+                            <a href="mailto:@Model.Email">@Model.Email</a>
+                        }
+                        else
+                        {
+                            <span class="no-data">No registrado</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="info-item full-width">
+                    <div class="info-label">
+                        <i class="fas fa-map-marker-alt"></i> Dirección
+                    </div>
+                    <div class="info-value">
+                        @if (!string.IsNullOrEmpty(Model.Direccion))
+                        {
+                            @Model.Direccion
+                        }
+                        else
+                        {
+                            <span class="no-data">No registrada</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE PREFERENCIAS -->
+        @if (!string.IsNullOrEmpty(Model.Preferencias))
+        {
+            <div class="preferences-section">
+                <h3><i class="fas fa-heart"></i> Preferencias del Cliente</h3>
+                <div class="preferences-content">
+                    <p>@Model.Preferencias</p>
+                </div>
+            </div>
+        }
+
+        <!-- SECCIÓN DE METADATOS -->
+        <div class="metadata-section">
+            <h3><i class="fas fa-info-circle"></i> Información de Registro</h3>
+            <div class="metadata-grid">
+                <div class="metadata-item">
+                    <span class="metadata-label">Registrado por:</span>
+                    <span class="metadata-value">@Model.UsuarioRegistro</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="metadata-label">Fecha de registro:</span>
+                    <span class="metadata-value">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .details-header h1 {
+            color: #c71585;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .details-header h1 i {
+            margin-right: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+            color: white;
+        }
+
+        .btn-back {
+            background: white;
+            color: #c71585;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #c71585;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background: #c71585;
+            color: white;
+        }
+
+        .details-container {
+            max-width: 900px;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: 15px;
+            padding: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* SECCIÓN DE PERFIL */
+        .profile-section {
+            background: linear-gradient(135deg, #ffc0cb 0%, #ffb6c1 100%);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            color: #ff69b4;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-name h2 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .ci-number {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .profile-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tipo-badge {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        .tipo-badge.vip {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #856404;
+        }
+
+        .tipo-badge.frecuente {
+            background: white;
+            color: #1976d2;
+        }
+
+        .tipo-badge.regular {
+            background: white;
+            color: #666;
+        }
+
+        .estado-badge {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+
+        .estado-badge.activo {
+            background: white;
+            color: #2ecc71;
+        }
+
+        .estado-badge.inactivo {
+            background: white;
+            color: #e74c3c;
+        }
+
+        /* SECCIÓN DE INFORMACIÓN */
+        .info-section {
+            padding: 40px;
+        }
+
+        .info-section h3 {
+            color: #555;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .info-section h3 i {
+            color: #ff69b4;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-label {
+            color: #999;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-label i {
+            color: #ff69b4;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .info-value a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .info-value a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .no-data {
+            color: #999;
+            font-style: italic;
+        }
+
+        /* SECCIÓN DE PREFERENCIAS */
+        .preferences-section {
+            padding: 0 40px 40px 40px;
+        }
+
+        .preferences-section h3 {
+            color: #555;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .preferences-section h3 i {
+            color: #ff69b4;
+        }
+
+        .preferences-content {
+            background: #fff5f8;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ff69b4;
+        }
+
+        .preferences-content p {
+            margin: 0;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* SECCIÓN DE METADATOS */
+        .metadata-section {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            margin-top: 20px;
+        }
+
+        .metadata-section h3 {
+            color: #555;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metadata-section h3 i {
+            color: #ff69b4;
+        }
+
+        .metadata-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .metadata-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .metadata-item:last-child {
+            border-bottom: none;
+        }
+
+        .metadata-label {
+            color: #777;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .metadata-value {
+            color: #333;
+            font-size: 14px;
+        }
+
+        media (max-width: 768px) {
+            .profile-section {
+                padding: 30px 20px;
+            }
+
+            .info-section {
+                padding: 30px 20px;
+            }
+
+            .preferences-section {
+                padding: 0 20px 30px 20px;
+            }
+
+            .metadata-section {
+                padding: 25px 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .btn-edit,
+            .btn-back {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                font-size: 50px;
+            }
+
+            .profile-name h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+}

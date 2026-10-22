@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Crear Pedido</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        button { padding: 10px 20px; background: #ff91c7; color: white; border: none; cursor: pointer; margin: 10px 0; }
+        textarea { width: 100%; font-family: monospace; font-size: 12px; border: 1px solid #ccc; padding: 10px; }
+        .result { margin-top: 20px; padding: 15px; background: white; border: 1px solid #ddd; border-radius: 5px; }
+        .error { background: #ffe6e6; border-color: #ff91c7; }
+        .success { background: #e6ffe6; border-color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Crear Pedido (static)</h1>
+        <p>Envía un pedido de prueba al endpoint y, si es exitoso, limpia el carrito en <code>localStorage</code> y redirige a <code>/Pedidos/BuscarPedido</code>.</p>
+        <button onclick="testCrearPedido()">Enviar Pedido de Prueba</button>
+        <button onclick="limpiarResultados()">Limpiar</button>
+
+        <h3>Respuesta del Servidor:</h3>
+        <textarea id="respuesta" rows="10" readonly></textarea>
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        async function testCrearPedido() {
+            const pedido = {
+                nombreCliente: "Juan Pérez",
+                emailCliente: "juan@ejemplo.com",
+                celularCliente: "78901234",
+                cedulaIdentidad: "1234567",
+                tipoEntrega: "RECOGER",
+                direccion: null,
+                metodoPago: 1,
+                observaciones: "Pedido de prueba desde static test",
+                productos: [
+                    { idProducto: 1, cantidad: 1, precioUnitario: 50.00 }
+                ],
+                subtotal: 50.00,
+                descuento: 0,
+                costoEnvio: 0,
+                total: 50.00
+            };
+
+            document.getElementById('resultado').innerHTML = '<p>Enviando pedido...</p>';
+
+            try {
+                const response = await fetch('/Pedidos/CrearPedido', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedido)
+                });
+
+                const text = await response.text();
+                document.getElementById('respuesta').value = text;
+
+                if (!response.ok) {
+                    document.getElementById('resultado').innerHTML = `<div class="result error"><h4>Error HTTP ${response.status}</h4><pre>${text}</pre></div>`;
+                    return;
+                }
+
+                const result = JSON.parse(text);
+                if (result && result.success === true) {
+                    // Limpiar carrito localStorage igual que en Checkout
+                    try {
+                        localStorage.removeItem('carrito');
+                        localStorage.removeItem('descuentoCarrito');
+                        console.log('localStorage limpiado (carrito, descuentoCarrito)');
+                    } catch (e) {
+                        console.warn('No se pudo limpiar localStorage:', e);
+                    }
+
+                    document.getElementById('resultado').innerHTML = `\
+                        <div class="result success">\
+                            <h4>Pedido Creado Exitosamente</h4>\
+                            <p><strong>ID:</strong> ${result.idPedido}</p>\
+                            <p><strong>Código:</strong> ${result.codigoSeguimiento}</p>\
+                            <p>Redirigiendo a <code>/Pedidos/BuscarPedido</code>...</p>\
+                        </div>`;
+
+                    setTimeout(() => {
+                        window.location.href = '/Pedidos/BuscarPedido';
+                    }, 2000);
+                } else {
+                    document.getElementById('resultado').innerHTML = `\
+                        <div class="result error">\
+                            <h4>Error: success = false</h4>\
+                            <pre>${JSON.stringify(result, null, 2)}</pre>\
+                        </div>`;
+                }
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = `<div class="result error"><h4>Error</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        function limpiarResultados() {
+            document.getElementById('respuesta').value = '';
+            document.getElementById('resultado').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,121 +1,82 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using WebPasteleria.Configuration;
 using WebPasteleria.Models;
+using WebPasteleria.Services.Catalogo;
+using WebPasteleria.Services.Notificaciones;
+using WebPasteleria.ViewModels;
 
-namespace WebPasteleria.Controllers
+namespace WebPasteleria.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private const int ProductosDestacados = 12;
+
+    private readonly ICatalogoService _catalogo;
+    private readonly IEmailSender _correo;
+    private readonly CorreoOptions _opcionesCorreo;
+    private readonly ILogger<HomeController> _logger;
+
+    public HomeController(
+        ICatalogoService catalogo,
+        IEmailSender correo,
+        IOptions<CorreoOptions> opcionesCorreo,
+        ILogger<HomeController> logger)
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly FinalPasteleriaContext _context;
+        _catalogo = catalogo;
+        _correo = correo;
+        _opcionesCorreo = opcionesCorreo.Value;
+        _logger = logger;
+    }
 
-        public HomeController(ILogger<HomeController> logger, FinalPasteleriaContext context)
+    public async Task<IActionResult> Index() =>
+        View(await _catalogo.ObtenerDestacadosAsync(ProductosDestacados, HttpContext.RequestAborted));
+
+    public IActionResult Privacy() => View();
+
+    public IActionResult AcercaDe() => View();
+
+    public IActionResult Contacto() => View();
+
+    public IActionResult Blog() => View();
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EnviarContacto(ContactoViewModel contacto)
+    {
+        if (!ModelState.IsValid)
         {
-            _logger = logger;
-            _context = context;
+            return Alerta("warning", "Por favor completa correctamente los campos requeridos.");
         }
 
-        // GET: Home/Index - P�gina principal
-        public async Task<IActionResult> Index()
+        if (!_correo.EstaDisponible || string.IsNullOrWhiteSpace(_opcionesCorreo.DestinoContacto))
         {
-            // Obtener productos destacados (activos, con stock, ordenados por fecha de registro)
-            var productosDestacados = await _context.Producto
-                .Include(p => p.IdCategoriaNavigation)
-                .Where(p => p.Estado == 1 && p.Stock > 0)
-                .OrderByDescending(p => p.FechaRegistro)
-                .Take(12) // Mostrar solo 12 productos en la p�gina de inicio
-                .ToListAsync();
-
-            return View(productosDestacados);
+            _logger.LogWarning("Se recibió un mensaje de contacto pero el correo no está configurado.");
+            return Alerta("danger", "En este momento no podemos recibir mensajes por este medio. Llámanos o escríbenos por WhatsApp.");
         }
 
-        // GET: Home/Producto
-        public IActionResult Producto()
-        {
-            return View();
-        }
+        var cuerpo = $"Nombre: {contacto.Nombre}\nCorreo: {contacto.Email}\nTeléfono: {contacto.Telefono}\n\n{contacto.Mensaje}";
+        var resultado = await _correo.EnviarAsync(
+            _opcionesCorreo.DestinoContacto,
+            $"Contacto web: {contacto.Nombre}",
+            cuerpo,
+            contacto.Email,
+            HttpContext.RequestAborted);
 
-        // GET: Home/Privacy
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        return resultado.Succeeded
+            ? Alerta("success", "Gracias por contactarnos. Te responderemos pronto.")
+            : Alerta("danger", resultado.Error ?? "Hubo un error al enviar tu mensaje.");
+    }
 
-        // GET: Home/AcercaDe
-        public IActionResult AcercaDe()
-        {
-            return View();
-        }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error() =>
+        View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 
-        // GET: Home/Contacto
-        public IActionResult Contacto()
-        {
-            return View();
-        }
-
-        // GET: Home/Blog
-        public IActionResult Blog()
-        {
-            return View();
-        }
-        
-        public IActionResult Cuenta()
-        {
-            return View();
-        }
-
-        // GET: Home/Carrito
-        public IActionResult Carrito()
-        {
-            // Renderizar la vista del carrito ubicada en Views/Carrito/Index.cshtml
-            return View("~/Views/Carrito/Index.cshtml");
-        }
-
-        // GET: Home/Checkout
-        public IActionResult Checkout()
-        {
-            return View("~/Views/Pedidos/Checkout.cshtml");
-        }
-
-        // POST: Home/EnviarContacto
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult EnviarContacto(string nombre, string email, string telefono, string mensaje)
-        {
-            try
-            {
-                // Aqu� puedes implementar la l�gica para enviar el correo o guardar en BD
-                // Por ahora solo mostramos un mensaje de �xito
-
-                if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(mensaje))
-                {
-                    TempData["AlertType"] = "warning";
-                    TempData["AlertMessage"] = "Por favor complete todos los campos requeridos";
-                    return RedirectToAction(nameof(Contacto));
-                }
-
-                // TODO: Implementar env�o de correo electr�nico
-                // await _emailService.EnviarCorreoContacto(nombre, email, telefono, mensaje);
-
-                TempData["AlertType"] = "success";
-                TempData["AlertMessage"] = "Gracias por contactarnos. Te responderemos pronto.";
-
-                return RedirectToAction(nameof(Contacto));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error al procesar formulario de contacto");
-                TempData["AlertType"] = "danger";
-                TempData["AlertMessage"] = "Hubo un error al enviar tu mensaje. Por favor intenta nuevamente.";
-                return RedirectToAction(nameof(Contacto));
-            }
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    private RedirectToActionResult Alerta(string tipo, string mensaje)
+    {
+        TempData["AlertType"] = tipo;
+        TempData["AlertMessage"] = mensaje;
+        return RedirectToAction(nameof(Contacto));
     }
 }

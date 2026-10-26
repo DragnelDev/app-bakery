@@ -369,6 +369,12 @@
                             <span>Empleados</span>
                         </a>
                     </li>
+                    <li class="@(ViewContext.RouteData.Values["controller"]?.ToString() == "Reportes" ? "active" : "")" title="Reportes">
+                        <a asp-area="Admin" asp-controller="Reportes" asp-action="Ventas">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Reportes</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
@@ -389,7 +395,7 @@
             <header class="header">
                 <h2>@ViewBag.Title</h2>
                 <div class="user-info">
-                    <span>Bienvenido, @User.Identity.Name</span>
+                    <span>Bienvenido, @(User?.Identity?.Name ?? "Usuario")</span>
                     <i class="fas fa-user-circle"></i>
 
                     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" style="display: inline;">
@@ -403,6 +409,7 @@
             </header>
 
             <div class="content-wrapper">
+                <partial name="_Alertas" />
                 @RenderBody()
             </div>
         </main>

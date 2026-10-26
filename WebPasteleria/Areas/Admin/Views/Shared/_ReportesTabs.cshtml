@@ -1,0 +1,8 @@
+@{
+    var accion = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<div class="admin-tabs">
+    <a asp-area="Admin" asp-controller="Reportes" asp-action="Ventas" class="@(accion == "Ventas" ? "active" : "")">Ventas</a>
+    <a asp-area="Admin" asp-controller="Reportes" asp-action="ProductosMasVendidos" class="@(accion == "ProductosMasVendidos" ? "active" : "")">Productos más vendidos</a>
+    <a asp-area="Admin" asp-controller="Reportes" asp-action="ClientesFrecuentes" class="@(accion == "ClientesFrecuentes" ? "active" : "")">Clientes frecuentes</a>
+</div>

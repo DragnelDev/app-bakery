@@ -1,73 +1,33 @@
-﻿@model WebPasteleria.Models.Usuario
-
+﻿@model Usuario
 @{
-    ViewData["Title"] = "Details";
+    ViewBag.Title = "Detalle de usuario";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Details</h1>
+<div class="card">
+    <div class="admin-page-header">
+        <h3>Detalle de usuario</h3>
+    </div>
 
-<div>
-    <h4>Usuario</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Usuario1)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Usuario1)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Clave)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Clave)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Role)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Role)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UltimoLogin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UltimoLogin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IntentosFallidos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IntentosFallidos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UsuarioRegistro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UsuarioRegistro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FechaRegistro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FechaRegistro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdEmpleadoNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdEmpleadoNavigation.Id)
-        </dd>
+    <dl class="admin-details">
+        <dt>Usuario</dt>
+        <dd>@Model.Usuario1</dd>
+        <dt>Empleado</dt>
+        <dd>@Model.IdEmpleadoNavigation.Nombre @Model.IdEmpleadoNavigation.ApellidoPaterno</dd>
+        <dt>Rol</dt>
+        <dd>@Model.Role</dd>
+        <dt>Último acceso</dt>
+        <dd>@(Model.UltimoLogin?.ToString("dd/MM/yyyy HH:mm") ?? "—")</dd>
+        <dt>Intentos fallidos</dt>
+        <dd>@(Model.IntentosFallidos ?? 0)</dd>
+        <dt>Registrado por</dt>
+        <dd>@Model.UsuarioRegistro el @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt>Estado</dt>
+        <dd>@(Model.Estado == EstadoRegistro.Activo ? "Activo" : "Inactivo")</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="admin-form-actions">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="admin-btn admin-btn-primary">Editar</a>
+        <a asp-action="Index" class="admin-btn admin-btn-secondary">Volver</a>
+    </div>
 </div>

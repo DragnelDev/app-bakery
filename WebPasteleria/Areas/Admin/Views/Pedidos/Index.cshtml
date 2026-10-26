@@ -129,11 +129,8 @@
                 {
                     @foreach (var pedido in Model)
                     {
-                        <tr data-pedido-id="@pedido.Id" 
-                            data-estado="@pedido.EstadoPedido"
-                            data-cliente="@pedido.NombreCliente"
-                            data-email="@pedido.EmailCliente"
-                            data-codigo="@pedido.CodigoSeguimiento"
+                        <tr data-pedido-id="@pedido.Id" data-estado="@pedido.EstadoPedido" data-cliente="@pedido.NombreCliente"
+                            data-email="@pedido.EmailCliente" data-codigo="@pedido.CodigoSeguimiento"
                             data-fecha="@pedido.FechaPedido?.ToString("yyyy-MM-dd")">
                             <td>
                                 <strong class="codigo-pedido">@pedido.CodigoSeguimiento</strong>
@@ -229,26 +226,20 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <button class="btn-icon btn-primary" 
-                                            onclick="verDetalle(@pedido.Id)" 
-                                            title="Ver Detalles">
+                                    <button class="btn-icon btn-primary" onclick="verDetalle(@pedido.Id)" title="Ver Detalles">
                                         <i class="fas fa-eye"></i>
                                     </button>
-                                    <button class="btn-icon btn-success" 
-                                            onclick="cambiarEstado(@pedido.Id, @pedido.EstadoPedido)" 
-                                            title="Cambiar Estado">
+                                    <button class="btn-icon btn-success"
+                                            onclick="cambiarEstado(@pedido.Id, @pedido.EstadoPedido)" title="Cambiar Estado">
                                         <i class="fas fa-exchange-alt"></i>
                                     </button>
-                                    <button class="btn-icon btn-secondary" 
-                                            onclick="imprimirPedido(@pedido.Id)" 
+                                    <button class="btn-icon btn-secondary" onclick="imprimirPedido(@pedido.Id)"
                                             title="Imprimir">
                                         <i class="fas fa-print"></i>
                                     </button>
                                     @if (pedido.EstadoPedido < 5)
                                     {
-                                        <button class="btn-icon btn-danger" 
-                                                onclick="cancelarPedido(@pedido.Id)" 
-                                                title="Cancelar">
+                                        <button class="btn-icon btn-danger" onclick="cancelarPedido(@pedido.Id)" title="Cancelar">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     }
@@ -335,26 +326,54 @@
         display: flex;
         align-items: center;
         gap: 15px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         border-left: 4px solid;
     }
 
-    .stat-pending { border-left-color: #ffc107; }
-    .stat-confirmed { border-left-color: #17a2b8; }
-    .stat-preparing { border-left-color: #007bff; }
-    .stat-ready { border-left-color: #6c757d; }
-    .stat-delivered { border-left-color: #28a745; }
+    .stat-pending {
+        border-left-color: #ffc107;
+    }
+
+    .stat-confirmed {
+        border-left-color: #17a2b8;
+    }
+
+    .stat-preparing {
+        border-left-color: #007bff;
+    }
+
+    .stat-ready {
+        border-left-color: #6c757d;
+    }
+
+    .stat-delivered {
+        border-left-color: #28a745;
+    }
 
     .stat-icon {
         font-size: 36px;
         opacity: 0.8;
     }
 
-    .stat-pending .stat-icon { color: #ffc107; }
-    .stat-confirmed .stat-icon { color: #17a2b8; }
-    .stat-preparing .stat-icon { color: #007bff; }
-    .stat-ready .stat-icon { color: #6c757d; }
-    .stat-delivered .stat-icon { color: #28a745; }
+    .stat-pending .stat-icon {
+        color: #ffc107;
+    }
+
+    .stat-confirmed .stat-icon {
+        color: #17a2b8;
+    }
+
+    .stat-preparing .stat-icon {
+        color: #007bff;
+    }
+
+    .stat-ready .stat-icon {
+        color: #6c757d;
+    }
+
+    .stat-delivered .stat-icon {
+        color: #28a745;
+    }
 
     .stat-info h4 {
         font-size: 28px;
@@ -456,7 +475,7 @@
 
     .btn-icon:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     media (max-width: 768px) {
@@ -494,13 +513,13 @@
                 const estado = parseInt(fila.dataset.estado);
                 const fecha = fila.dataset.fecha;
 
-                switch(estado) {
+                switch (estado) {
                     case 0: pendientes++; break;
                     case 1: confirmados++; break;
                     case 2: preparacion++; break;
                     case 3: listos++; break;
-                    case 5: 
-                        if (fecha === hoy) entregados++; 
+                    case 5:
+                        if (fecha === hoy) entregados++;
                         break;
                 }
             });
@@ -537,7 +556,7 @@
                     mostrar = false;
                 }
 
-                if (filterBuscar && !codigo.includes(filterBuscar) && 
+                if (filterBuscar && !codigo.includes(filterBuscar) &&
                     !cliente.includes(filterBuscar) && !email.includes(filterBuscar)) {
                     mostrar = false;
                 }
@@ -572,30 +591,31 @@
         }
 
         function cancelarPedido(id) {
-            confirmDelete('¿Estás seguro de que deseas cancelar este pedido?', function() {
+            confirmDelete('¿Estás seguro de que deseas cancelar este pedido?', function () {
                 fetch(`/Admin/Pedidos/Cancelar/${id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'RequestVerificationToken': (document.querySelector('input[name="__RequestVerificationToken"]') || {}).value || ''
                     }
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification('success', 'Éxito', 'Pedido cancelado correctamente');
-                        location.reload();
-                    } else {
-                        showNotification('error', 'Error', data.mensaje || 'No se pudo cancelar el pedido');
-                    }
-                })
-                .catch(error => {
-                    showNotification('error', 'Error', 'Ocurrió un error al cancelar el pedido');
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification('success', 'Éxito', 'Pedido cancelado correctamente');
+                            location.reload();
+                        } else {
+                            showNotification('error', 'Error', data.mensaje || 'No se pudo cancelar el pedido');
+                        }
+                    })
+                    .catch(error => {
+                        showNotification('error', 'Error', 'Ocurrió un error al cancelar el pedido');
+                    });
             });
         }
 
         // Inicializar
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             calcularEstadisticas();
         });
     </script>

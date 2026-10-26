@@ -1,60 +1,43 @@
-﻿@model IEnumerable<WebPasteleria.Models.CarritoDetalle>
-
+﻿@model ReporteProductosViewModel
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Productos más vendidos";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Index</h1>
+<partial name="_ReportesTabs" />
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Cantidad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrecioUnitario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubTotal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdCarritoNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdProductoNavigation)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cantidad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrecioUnitario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SubTotal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdCarritoNavigation.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdProductoNavigation.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="card">
+    <div class="admin-page-header">
+        <h3>Productos más vendidos</h3>
+    </div>
+    <partial name="_FiltroFechas" model="Model.Rango" />
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Producto</th>
+                <th>Unidades</th>
+                <th>Ingresos (Bs)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Filas.Count == 0)
+            {
+                <tr>
+                    <td colspan="4" class="admin-empty">No hay ventas en el rango seleccionado</td>
+                </tr>
+            }
+            @for (var i = 0; i < Model.Filas.Count; i++)
+            {
+                var fila = Model.Filas[i];
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@fila.Nombre</td>
+                    <td>@fila.Unidades</td>
+                    <td>@fila.Ingresos.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

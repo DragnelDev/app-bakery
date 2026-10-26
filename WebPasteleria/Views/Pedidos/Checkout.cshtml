@@ -12,7 +12,7 @@
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </a>
 
-            <a asp-controller="Home" asp-action="Carrito" class="stext-109 cl8 hov-cl1 trans-04">
+            <a asp-controller="Carritos" asp-action="Index" class="stext-109 cl8 hov-cl1 trans-04">
                 Carrito
                 <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
             </a>
@@ -32,7 +32,7 @@
                 <h4 class="m-t-20">Tu carrito está vacío</h4>
                 <p>Agrega productos antes de finalizar tu compra</p>
                 <a asp-controller="Productos" asp-action="Index" class="btn btn-primary"
-                    style="background-color: #ff91c7; border-color: #ff91c7;">
+                   style="background-color: #ff91c7; border-color: #ff91c7;">
                     Ver Productos
                 </a>
             </div>
@@ -41,7 +41,7 @@
                 <!-- Formulario de Datos -->
                 <div class="col-lg-7 m-b-50">
                     <div class="bor10 p-lr-40 p-t-30 p-b-40"
-                        style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
+                         style="background-color: #fff; border-radius: 10px; border-color: #ff91c7;">
                         <h4 class="mtext-109 cl2 p-b-30">
                             <i class="fa fa-user" style="color: #ff91c7;"></i> Datos del Cliente
                         </h4>
@@ -53,26 +53,26 @@
                                 <div class="col-md-6 m-b-20">
                                     <label class="stext-111 cl2 p-b-10">Nombre Completo *</label>
                                     <input class="stext-111 cl2 plh3 size-111 p-lr-15 bor8" type="text"
-                                        id="nombre-cliente" name="nombreCliente" placeholder="Juan Pérez" required>
+                                           id="nombre-cliente" name="nombreCliente" placeholder="Juan Pérez" required>
                                 </div>
 
                                 <div class="col-md-6 m-b-20">
                                     <label class="stext-111 cl2 p-b-10">Cédula de Identidad</label>
                                     <input class="stext-111 cl2 plh3 size-111 p-lr-15 bor8" type="text"
-                                        id="cedula-cliente" name="cedulaCliente" placeholder="1234567">
+                                           id="cedula-cliente" name="cedulaCliente" placeholder="1234567">
                                 </div>
 
                                 <div class="col-md-6 m-b-20">
                                     <label class="stext-111 cl2 p-b-10">Correo Electrónico *</label>
                                     <input class="stext-111 cl2 plh3 size-111 p-lr-15 bor8" type="email"
-                                        id="email-cliente" name="emailCliente" placeholder="correo@ejemplo.com"
-                                        required>
+                                           id="email-cliente" name="emailCliente" placeholder="correo@ejemplo.com"
+                                           required>
                                 </div>
 
                                 <div class="col-md-6 m-b-20">
                                     <label class="stext-111 cl2 p-b-10">Teléfono / WhatsApp *</label>
                                     <input class="stext-111 cl2 plh3 size-111 p-lr-15 bor8" type="tel"
-                                        id="telefono-cliente" name="celularCliente" placeholder="78901234" required>
+                                           id="telefono-cliente" name="celularCliente" placeholder="78901234" required>
                                 </div>
                             </div>
 
@@ -83,118 +83,29 @@
                                 </h5>
 
                                 <div class="row">
-                                    <div class="col-md-6 m-b-15">
-                                        <div class="bor8" style="cursor: pointer; transition: all 0.3s; padding: 20px;"
-                                            onclick="seleccionarEntrega('RECOGER')">
-                                            <input type="radio" name="tipoEntrega" id="entrega-recoger" value="RECOGER"
-                                                checked>
-                                            <label for="entrega-recoger" style="cursor: pointer; margin-left: 10px;">
-                                                <strong>Recoger en Tienda</strong><br>
-                                                <small>Av. Jaime Mendoza 456, Sucre</small><br>
-                                                <span style="color: #28a745;">Gratis</span>
-                                            </label>
+                                    @{
+                                        var metodosPago = ViewBag.MetodosPago as List<MetodoPago> ?? new List<MetodoPago>();
+                                    }
+                                    @if (metodosPago.Count == 0)
+                                    {
+                                        <div class="col-12 m-b-15">
+                                            <p class="stext-111 cl6">No hay métodos de pago disponibles por el momento.</p>
                                         </div>
-                                    </div>
-
-                                    <div class="col-md-6 m-b-15">
-                                        <div class="bor8" style="cursor: pointer; transition: all 0.3s; padding: 20px;"
-                                            onclick="seleccionarEntrega('DOMICILIO')">
-                                            <input type="radio" name="tipoEntrega" id="entrega-domicilio"
-                                                value="DOMICILIO">
-                                            <label for="entrega-domicilio" style="cursor: pointer; margin-left: 10px;">
-                                                <strong>Entrega a Domicilio</strong><br>
-                                                <small>En Sucre y alrededores</small><br>
-                                                <span style="color: #ff91c7;">15 - 25 Bs</span>
-                                            </label>
+                                    }
+                                    @for (var i = 0; i < metodosPago.Count; i++)
+                                    {
+                                        var metodo = metodosPago[i];
+                                        <div class="col-md-6 m-b-15">
+                                            <div class="bor8" style="cursor: pointer; padding: 20px;">
+                                                <input type="radio" name="metodoPago" id="pago-@metodo.Id"
+                                                       value="@metodo.Id" @(i == 0 ? "checked" : "")>
+                                                <label for="pago-@metodo.Id" style="cursor: pointer; margin-left: 10px;">
+                                                    <i class="fa fa-credit-card" style="color: #ff91c7;"></i>
+                                                    <strong> @metodo.Nombre</strong>
+                                                </label>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Dirección (Solo si es entrega a domicilio) -->
-                            <div id="direccion-entrega" style="display: none;">
-                                <h5 class="mtext-110 cl2 p-b-20">
-                                    <i class="fa fa-map-marker" style="color: #ff91c7;"></i> Dirección de Entrega
-                                </h5>
-
-                                <div class="row">
-                                    <div class="col-12 m-b-20">
-                                        <label class="stext-111 cl2 p-b-10">Dirección Completa *</label>
-                                        <input class="stext-111 cl2 plh3 size-111 p-lr-15 bor8" type="text"
-                                            id="direccion-cliente" name="direccion"
-                                            placeholder="Calle Principal #123, Zona Norte">
-                                    </div>
-
-                                    <div class="col-md-6 m-b-20">
-                                        <label class="stext-111 cl2 p-b-10">Zona</label>
-                                        <select class="stext-111 cl2 size-111 p-lr-15 bor8" id="zona-entrega"
-                                            name="zona">
-                                            <option value="Centro">Centro (15 Bs)</option>
-                                            <option value="Norte">Zona Norte (20 Bs)</option>
-                                            <option value="Sur">Zona Sur (20 Bs)</option>
-                                            <option value="Este">Zona Este (25 Bs)</option>
-                                            <option value="Oeste">Zona Oeste (25 Bs)</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-6 m-b-20">
-                                        <label class="stext-111 cl2 p-b-10">Referencia</label>
-                                        <input class="stext-111 cl2 plh3 size-111 p-lr-15 bor8" type="text"
-                                            id="referencia" name="referencia" placeholder="Cerca del mercado central">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Método de Pago -->
-                            <div class="m-t-30">
-                                <h5 class="mtext-110 cl2 p-b-20">
-                                    <i class="fa fa-credit-card" style="color: #ff91c7;"></i> Método de Pago
-                                </h5>
-
-                                <div class="row">
-                                    <div class="col-md-6 m-b-15">
-                                        <div class="bor8" style="cursor: pointer; padding: 20px;">
-                                            <input type="radio" name="metodoPago" id="pago-efectivo" value="1" checked>
-                                            <label for="pago-efectivo" style="cursor: pointer; margin-left: 10px;">
-                                                <i class="fa fa-money" style="color: #28a745;"></i>
-                                                <strong> Efectivo</strong><br>
-                                                <small>Pago al recoger o recibir</small>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 m-b-15">
-                                        <div class="bor8" style="cursor: pointer; padding: 20px;">
-                                            <input type="radio" name="metodoPago" id="pago-tarjeta" value="2">
-                                            <label for="pago-tarjeta" style="cursor: pointer; margin-left: 10px;">
-                                                <i class="fa fa-credit-card" style="color: #ff91c7;"></i>
-                                                <strong> Tarjeta</strong><br>
-                                                <small>Crédito o Débito</small>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 m-b-15">
-                                        <div class="bor8" style="cursor: pointer; padding: 20px;">
-                                            <input type="radio" name="metodoPago" id="pago-transferencia" value="3">
-                                            <label for="pago-transferencia" style="cursor: pointer; margin-left: 10px;">
-                                                <i class="fa fa-bank" style="color: #007bff;"></i>
-                                                <strong> Transferencia</strong><br>
-                                                <small>Banco o QR</small>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 m-b-15">
-                                        <div class="bor8" style="cursor: pointer; padding: 20px;">
-                                            <input type="radio" name="metodoPago" id="pago-qr" value="4">
-                                            <label for="pago-qr" style="cursor: pointer; margin-left: 10px;">
-                                                <i class="fa fa-qrcode" style="color: #ff6b6b;"></i>
-                                                <strong> QR</strong><br>
-                                                <small>Pago simple QR</small>
-                                            </label>
-                                        </div>
-                                    </div>
+                                    }
                                 </div>
                             </div>
 
@@ -202,8 +113,8 @@
                             <div class="m-t-30">
                                 <label class="stext-111 cl2 p-b-10">Observaciones / Instrucciones Especiales</label>
                                 <textarea class="stext-111 cl2 plh3 p-lr-15 p-tb-10 bor8" id="observaciones"
-                                    name="observaciones" rows="4"
-                                    placeholder="Ej: Pastel con mensaje personalizado, sin nueces, entrega en horario específico, etc."></textarea>
+                                          name="observaciones" rows="4"
+                                          placeholder="Ej: Pastel con mensaje personalizado, sin nueces, entrega en horario específico, etc."></textarea>
                             </div>
                         </form>
                     </div>
@@ -212,7 +123,7 @@
                 <!-- Resumen del Pedido -->
                 <div class="col-lg-5 m-b-50">
                     <div class="bor10 p-lr-40 p-t-30 p-b-40"
-                        style="background-color: #fff; border-radius: 10px; border-color: #ff91c7; position: sticky; top: 20px;">
+                         style="background-color: #fff; border-radius: 10px; border-color: #ff91c7; position: sticky; top: 20px;">
                         <h4 class="mtext-109 cl2 p-b-30">
                             <i class="fa fa-shopping-cart" style="color: #ff91c7;"></i> Tu Pedido
                         </h4>
@@ -233,7 +144,7 @@
                         </div>
 
                         <div class="flex-w flex-t bor12 p-t-15 p-b-13" id="checkout-descuento-section"
-                            style="display: none;">
+                             style="display: none;">
                             <div class="size-208">
                                 <span class="stext-110 cl2">Descuento:</span>
                             </div>
@@ -262,14 +173,14 @@
 
                         <!-- Botón Finalizar -->
                         <button type="button" id="btn-finalizar-pedido"
-                            class="flex-c-m stext-101 cl0 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer"
-                            style="background-color: #ff91c7; border-color: #ff91c7;">
+                                class="flex-c-m stext-101 cl0 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer"
+                                style="background-color: #ff91c7; border-color: #ff91c7;">
                             <i class="fa fa-check"></i> Finalizar Pedido
                         </button>
 
-                        <a asp-controller="Home" asp-action="Carrito"
-                            class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-t-15"
-                            style="border-color: #ff91c7; color: #ff91c7; display: block; text-align: center;">
+                        <a asp-controller="Carritos" asp-action="Index"
+                           class="flex-c-m stext-101 cl2 size-116 bor14 hov-btn3 p-lr-15 trans-04 pointer m-t-15"
+                           style="border-color: #ff91c7; color: #ff91c7; display: block; text-align: center;">
                             <i class="fa fa-arrow-left"></i> Volver al Carrito
                         </a>
 
@@ -346,16 +257,16 @@
                 const precio = Number(item.precio) || 0;
 
                 html += `
-                        <div class="flex-w flex-t p-b-13 bor12">
-                            <div class="size-208">
-                                <img src="${imagen}" alt="${nombre}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                            <div class="flex-w flex-t p-b-13 bor12">
+                                <div class="size-208">
+                                    <img src="${imagen}" alt="${nombre}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 5px;">
+                                </div>
+                                <div class="size-209">
+                                    <span class="stext-110 cl2">${nombre}</span><br>
+                                    <span class="stext-111 cl6">${cantidad} x ${precio.toFixed(2)} Bs</span>
+                                </div>
                             </div>
-                            <div class="size-209">
-                                <span class="stext-110 cl2">${nombre}</span><br>
-                                <span class="stext-111 cl6">${cantidad} x ${precio.toFixed(2)} Bs</span>
-                            </div>
-                        </div>
-                    `;
+                        `;
             });
 
             productosContainer.innerHTML = html;
@@ -501,6 +412,7 @@
                     cedulaIdentidad: (document.getElementById('cedula-cliente') || {}).value?.trim() || null,
                     tipoEntrega,
                     direccion,
+                    zonaEntrega: zona,
                     metodoPago: parseInt((document.querySelector('input[name="metodoPago"]:checked') || {}).value || '1'),
                     observaciones: (document.getElementById('observaciones') || {}).value?.trim() || null,
                     productos: productosPayload,
@@ -521,7 +433,7 @@
 
                 // Antiforgery token si existe
                 const token = obtenerTokenAntiforgery();
-                const headers = { 
+                const headers = {
                     'Content-Type': 'application/json'
                 };
                 if (token) {
@@ -545,8 +457,8 @@
                         msg = errJson.mensaje || errJson.error || JSON.stringify(errJson);
                         console.error('Error del servidor:', errJson);
                     } catch {
-                        try { 
-                            msg = await response.text(); 
+                        try {
+                            msg = await response.text();
                             console.error('Error (texto):', msg);
                         } catch { /* ignore */ }
                     }
@@ -575,7 +487,7 @@
                     }).then((value) => {
                         console.log('SweetAlert cerrado, redirigiendo a BuscarPedido');
                         // Redirigir a la página de búsqueda/seguimiento de pedidos
-                        window.location.href = '/Pedidos/BuscarPedido';
+                        window.location.href = '/Pedidos/Seguimiento?codigo=' + encodeURIComponent(result.codigoSeguimiento);
                     });
                 } else {
                     const mensaje = (result && (result.mensaje || result.error)) || 'Error al procesar el pedido: respuesta incompleta';

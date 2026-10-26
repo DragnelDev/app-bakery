@@ -1,43 +1,47 @@
-@model List<WebPasteleria.Models.OrdenViewModel>
+@model DashboardViewModel
 @{
     ViewBag.Title = "Dashboard Principal";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+@functions {
+    static string ClaseEstado(byte estado) => estado switch
+    {
+        PedidoEstado.Entregado => "delivered",
+        PedidoEstado.Cancelado => "cancelled",
+        PedidoEstado.EnPreparacion or PedidoEstado.ListoParaEntrega or PedidoEstado.EnCamino => "prepared",
+        _ => "pending"
+    };
+}
+
 <!-- TARJETAS KPI -->
 <section class="kpi-cards">
     <div class="card kpi-card">
-        <div class="icon">
-            <i class="fas fa-sack-dollar"></i>
-        </div>
+        <div class="icon"><i class="fas fa-sack-dollar"></i></div>
         <div class="details">
             <p class="label">Ventas Hoy</p>
-            <p class="value">Bs @ViewBag.VentasHoy</p>
+            <p class="value">Bs @Model.VentasHoy.ToString("N2")</p>
         </div>
     </div>
 
     <div class="card kpi-card">
-        <div class="icon">
-            <i class="fas fa-box-open"></i>
-        </div>
+        <div class="icon"><i class="fas fa-box-open"></i></div>
         <div class="details">
             <p class="label">Pedidos Pendientes</p>
-            <p class="value">@ViewBag.PedidosPendientes</p>
+            <p class="value">@Model.PedidosPendientes</p>
         </div>
     </div>
 
     <div class="card kpi-card">
-        <div class="icon">
-            <i class="fas fa-calendar-check"></i>
-        </div>
+        <div class="icon"><i class="fas fa-calendar-check"></i></div>
         <div class="details">
             <p class="label">Entregas Mañana</p>
-            <p class="value">@ViewBag.EntregasManana</p>
+            <p class="value">@Model.EntregasManana</p>
         </div>
     </div>
 </section>
 
-<!-- TABLA DE ÓRDENES RECIENTES -->
+<!-- ÓRDENES RECIENTES -->
 <section class="main-table-container">
     <div class="card">
         <h3>Órdenes Recientes</h3>
@@ -46,57 +50,30 @@
                 <tr>
                     <th>ID</th>
                     <th>Cliente</th>
-                    <th>Producto</th>
+                    <th>Productos</th>
                     <th>Total</th>
                     <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null && Model.Any())
-                {
-                    @foreach (var orden in Model)
-                    {
-                        <tr>
-                            <td>#@orden.Id</td>
-                            <td>@orden.NombreCliente</td>
-                            <td>@orden.Producto</td>
-                            <td>Bs @orden.Total.ToString("N2")</td>
-                            <td>
-                                @if (orden.Estado == "Preparacion")
-                                {
-                                    <span class="status-badge prepared">Preparación</span>
-                                }
-                                else if (orden.Estado == "Entregado")
-                                {
-                                    <span class="status-badge delivered">Entregado</span>
-                                }
-                                else
-                                {
-                                    <span class="status-badge pending">Pendiente</span>
-                                }
-                            </td>
-                        </tr>
-                    }
-                }
-                else
+                @if (Model.OrdenesRecientes.Count == 0)
                 {
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 30px; color: #999;">
-                            No hay órdenes recientes
-                        </td>
+                        <td colspan="5" class="admin-empty">No hay órdenes recientes</td>
+                    </tr>
+                }
+                @foreach (var orden in Model.OrdenesRecientes)
+                {
+                    <tr>
+                        <td>#@orden.Id</td>
+                        <td>@orden.NombreCliente</td>
+                        <td>@orden.Productos</td>
+                        <td>Bs @orden.Total.ToString("N2")</td>
+                        <td><span class="status-badge @ClaseEstado(orden.EstadoCodigo)">@orden.EstadoNombre</span></td>
                     </tr>
                 }
             </tbody>
         </table>
-        <a asp-area="Admin" asp-controller="Pedidos" asp-action="Index" class="view-all">
-            Ver todos los pedidos →
-        </a>
+        <a asp-area="Admin" asp-controller="Pedidos" asp-action="Index" class="view-all">Ver todos los pedidos →</a>
     </div>
 </section>
-
-@section Scripts {
-    <script>
-        // Puedes agregar JavaScript personalizado aquí
-        console.log('Dashboard cargado correctamente');
-    </script>
-}

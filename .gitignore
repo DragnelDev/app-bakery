@@ -482,3 +482,45 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+# =============================================================
+# Pasteleria Carmen - reglas especificas del proyecto
+# =============================================================
+
+# --- Secretos y configuracion local (NUNCA subir credenciales) ---
+# Copia appsettings.Development.example.json a appsettings.Development.json y ajusta tu conexion.
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+appsettings.Production.json
+appsettings.Staging.json
+secrets.json
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.crt
+
+# --- Resultados de pruebas y cobertura ---
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage.cobertura.xml
+coverage.opencover.xml
+
+# --- SQL Server local ---
+*.bacpac
+*.dacpac
+
+# --- Archivos subidos por usuarios (si se agrega carga de imagenes) ---
+WebPasteleria/wwwroot/uploads/
+
+# --- Basura de sistema operativo / editores ---
+*~
+*.orig
+*.rej
+.fleet/
+*.code-workspace

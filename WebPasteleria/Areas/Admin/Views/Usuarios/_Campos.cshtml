@@ -1,0 +1,60 @@
+@model UsuarioFormViewModel
+@{
+    var esEdicion = Model.Id > 0;
+}
+
+<div class="admin-field">
+    <label asp-for="IdEmpleado"></label>
+    <select asp-for="IdEmpleado" asp-items="(SelectList)ViewBag.Empleados">
+        <option value="0">Seleccione un empleado</option>
+    </select>
+    <span asp-validation-for="IdEmpleado" class="field-error"></span>
+</div>
+
+<div class="admin-field">
+    <label asp-for="NombreUsuario"></label>
+    <input asp-for="NombreUsuario" type="text" maxlength="50" autocomplete="off" />
+    <span asp-validation-for="NombreUsuario" class="field-error"></span>
+</div>
+
+<div class="admin-field">
+    <label asp-for="Clave"></label>
+    <input asp-for="Clave" type="password" autocomplete="new-password" />
+    @if (esEdicion)
+    {
+        <small>Déjala vacía para conservar la contraseña actual.</small>
+    }
+    <span asp-validation-for="Clave" class="field-error"></span>
+</div>
+
+<div class="admin-field">
+    <label asp-for="ConfirmarClave"></label>
+    <input asp-for="ConfirmarClave" type="password" autocomplete="new-password" />
+    <span asp-validation-for="ConfirmarClave" class="field-error"></span>
+</div>
+
+<div class="admin-field">
+    <label asp-for="Rol"></label>
+    <select asp-for="Rol" asp-items="(SelectList)ViewBag.Roles"></select>
+    <span asp-validation-for="Rol" class="field-error"></span>
+</div>
+
+@if (esEdicion)
+{
+    <div class="admin-field">
+        <label asp-for="Estado"></label>
+        <select asp-for="Estado">
+            <option value="1">Activo</option>
+            <option value="0">Inactivo</option>
+        </select>
+        <span asp-validation-for="Estado" class="field-error"></span>
+    </div>
+
+    <div class="admin-field">
+        <label>
+            <input asp-for="ReiniciarIntentos" type="checkbox" />
+            @Html.DisplayNameFor(m => m.ReiniciarIntentos)
+        </label>
+        <small>Intentos fallidos actuales: @Model.IntentosFallidos</small>
+    </div>
+}

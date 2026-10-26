@@ -1,10 +1,11 @@
-@model WebPasteleria.Models.Pedido
+@model WebPasteleria.Services.Pedidos.PedidoDetalle
 
 @{
+    var pedido = Model.Pedido;
     ViewBag.Title = "Detalle del Pedido";
     Layout = "/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
-    var detalles = ViewBag.Detalles as List<WebPasteleria.Models.DetallePedido>;
-    var seguimientos = ViewBag.Seguimientos as List<WebPasteleria.Models.SeguimientoPedido>;
+    var detalles = Model.Detalles;
+    var seguimientos = Model.Seguimientos;
 }
 
 <div class="detalle-pedido-container">
@@ -16,14 +17,14 @@
                     <i class="fas fa-arrow-left"></i> Volver
                 </a>
                 <h3 class="card-title">
-                    Pedido #@Model.CodigoSeguimiento
+                    Pedido #@pedido.CodigoSeguimiento
                 </h3>
             </div>
             <div class="header-right">
                 <button class="btn btn-secondary btn-sm" onclick="imprimirPedido()">
                     <i class="fas fa-print"></i> Imprimir
                 </button>
-                <a asp-action="ActualizarEstado" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">
+                <a asp-action="ActualizarEstado" asp-route-id="@pedido.Id" class="btn btn-primary btn-sm">
                     <i class="fas fa-edit"></i> Cambiar Estado
                 </a>
             </div>
@@ -37,21 +38,21 @@
                 <div class="info-content">
                     <div class="info-row">
                         <span class="label">Nombre:</span>
-                        <span class="value">@Model.NombreCliente</span>
+                        <span class="value">@pedido.NombreCliente</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Email:</span>
-                        <span class="value">@Model.EmailCliente</span>
+                        <span class="value">@pedido.EmailCliente</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Teléfono:</span>
-                        <span class="value">@Model.CelularCliente</span>
+                        <span class="value">@pedido.CelularCliente</span>
                     </div>
-                    @if (Model.IdClienteNavigation != null)
+                    @if (pedido.IdClienteNavigation != null)
                     {
                         <div class="info-row">
                             <span class="label">CI:</span>
-                            <span class="value">@Model.IdClienteNavigation.CedulaIdentidad</span>
+                            <span class="value">@pedido.IdClienteNavigation.CedulaIdentidad</span>
                         </div>
                     }
                 </div>
@@ -63,20 +64,27 @@
                 <div class="info-content">
                     <div class="info-row">
                         <span class="label">Código:</span>
-                        <span class="value codigo">@Model.CodigoSeguimiento</span>
+                        <span class="value codigo">@pedido.CodigoSeguimiento</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Fecha de Pedido:</span>
-                        <span class="value">@Model.FechaPedido?.ToString("dd/MM/yyyy HH:mm")</span>
+                        <span class="value">@pedido.FechaPedido?.ToString("dd/MM/yyyy HH:mm")</span>
                     </div>
                     <div class="info-row">
                         <span class="label">Fecha de Entrega:</span>
-                        <span class="value">@Model.FechaEntrega?.ToString("dd/MM/yyyy")</span>
+                        <span class="value">@pedido.FechaEntrega?.ToString("dd/MM/yyyy")</span>
                     </div>
+                    @if (!string.IsNullOrWhiteSpace(pedido.Direccion))
+                    {
+                        <div class="info-row">
+                            <span class="label">Dirección de Entrega:</span>
+                            <span class="value">@pedido.Direccion</span>
+                        </div>
+                    }
                     <div class="info-row">
                         <span class="label">Tipo de Entrega:</span>
                         <span class="value">
-                            @if (Model.TipoEntrega == "RECOGER")
+                            @if (pedido.TipoEntrega == "RECOGER")
                             {
                                 <span class="badge badge-info"><i class="fas fa-store"></i> Recoger en Tienda</span>
                             }
@@ -88,7 +96,7 @@
                     </div>
                     <div class="info-row">
                         <span class="label">Método de Pago:</span>
-                        <span class="value">@Model.MetodoPagoNavigation?.Nombre</span>
+                        <span class="value">@pedido.MetodoPagoNavigation?.Nombre</span>
                     </div>
                 </div>
             </div>
@@ -103,7 +111,7 @@
                             var estadoTexto = "";
                             var estadoIcono = "";
                             
-                            switch (Model.EstadoPedido)
+                            switch (pedido.EstadoPedido)
                             {
                                 case 0:
                                     estadoClass = "estado-pendiente";
@@ -147,11 +155,11 @@
                             <span>@estadoTexto</span>
                         </div>
                     </div>
-                    @if (!string.IsNullOrEmpty(Model.Observaciones))
+                    @if (!string.IsNullOrEmpty(pedido.Observaciones))
                     {
                         <div class="info-row">
                             <span class="label">Observaciones:</span>
-                            <span class="value">@Model.Observaciones</span>
+                            <span class="value">@pedido.Observaciones</span>
                         </div>
                     }
                 </div>
@@ -201,7 +209,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="4" class="text-right"><strong>TOTAL:</strong></td>
-                        <td><strong class="total-pedido">@Model.Total?.ToString("N2") Bs</strong></td>
+                        <td><strong class="total-pedido">@pedido.Total?.ToString("N2") Bs</strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -351,13 +359,33 @@
         font-size: 24px;
     }
 
-    .estado-pendiente { background: #ffc107; }
-    .estado-confirmado { background: #17a2b8; }
-    .estado-preparacion { background: #007bff; }
-    .estado-listo { background: #6c757d; }
-    .estado-camino { background: #17a2b8; }
-    .estado-entregado { background: #28a745; }
-    .estado-cancelado { background: #dc3545; }
+    .estado-pendiente {
+        background: #ffc107;
+    }
+
+    .estado-confirmado {
+        background: #17a2b8;
+    }
+
+    .estado-preparacion {
+        background: #007bff;
+    }
+
+    .estado-listo {
+        background: #6c757d;
+    }
+
+    .estado-camino {
+        background: #17a2b8;
+    }
+
+    .estado-entregado {
+        background: #28a745;
+    }
+
+    .estado-cancelado {
+        background: #dc3545;
+    }
 
     .producto-info strong {
         color: #2c3e50;
@@ -442,7 +470,9 @@
     }
 
     media print {
-        .btn, .card-header .header-right {
+
+        .btn,
+        .card-header .header-right {
             display: none !important;
         }
     }

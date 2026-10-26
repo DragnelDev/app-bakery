@@ -21,6 +21,8 @@ public partial class Pedido
 
     public string? CelularCliente { get; set; }
 
+    public string? Direccion { get; set; }
+
     public int IdUsuario { get; set; }
 
     public string? TipoEntrega { get; set; }

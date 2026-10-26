@@ -1,0 +1,5 @@
+@if (TempData["AlertMessage"] is string mensaje && !string.IsNullOrWhiteSpace(mensaje))
+{
+    var tipo = TempData["AlertType"] as string ?? "info";
+    <div class="admin-alert admin-alert-@tipo" role="alert">@mensaje</div>
+}

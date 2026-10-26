@@ -1,5 +1,5 @@
 /* ======================================
-   ESTILOS GENERALES - Pastelería Carmen
+   ESTILOS GENERALES - Pastelerï¿½a Carmen
    ====================================== */
 * {
     margin: 0;
@@ -22,7 +22,7 @@ body {
 }
 
 /* ======================================
-   SIDEBAR - MENÚ LATERAL
+   SIDEBAR - MENï¿½ LATERAL
    ====================================== */
 .sidebar {
     width: 260px;
@@ -325,3 +325,43 @@ body {
         font-size: 12px;
     }
 }
+
+
+/* ===== Componentes genericos del panel (formularios, botones, alertas, reportes) ===== */
+.status-badge.cancelled { background-color: #f8d7da; color: #842029; }
+
+.admin-page-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.admin-page-header h3 { margin: 0; }
+
+.admin-btn { display: inline-block; padding: 8px 16px; border-radius: 6px; border: 1px solid transparent; font-size: 14px; cursor: pointer; text-decoration: none; }
+.admin-btn-primary { background-color: #ff91c7; color: #fff; border-color: #ff91c7; }
+.admin-btn-secondary { background-color: #fff; color: #555; border-color: #ccc; }
+.admin-btn-danger { background-color: #dc3545; color: #fff; border-color: #dc3545; }
+.admin-btn:hover { opacity: .88; }
+
+.admin-form { max-width: 560px; }
+.admin-field { margin-bottom: 16px; }
+.admin-field label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; }
+.admin-field input[type=text], .admin-field input[type=password], .admin-field input[type=date],
+.admin-field select, .admin-field textarea { width: 100%; padding: 9px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+.admin-field .field-error { color: #dc3545; font-size: 13px; }
+.admin-form-actions { display: flex; gap: 10px; margin-top: 20px; }
+.admin-summary-error { color: #dc3545; margin-bottom: 14px; }
+
+.admin-alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+.admin-alert-success { background-color: #d1e7dd; color: #0f5132; }
+.admin-alert-danger { background-color: #f8d7da; color: #842029; }
+.admin-alert-warning { background-color: #fff3cd; color: #664d03; }
+.admin-alert-info { background-color: #cff4fc; color: #055160; }
+
+.admin-details dt { font-weight: 600; margin-top: 12px; }
+.admin-details dd { margin: 2px 0 0 0; }
+
+.admin-filter { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px; }
+.admin-filter label { display: block; font-size: 13px; margin-bottom: 4px; }
+.admin-filter input[type=date] { padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; }
+.admin-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.admin-tabs a { padding: 8px 14px; border-radius: 6px; background: #fff; color: #555; text-decoration: none; border: 1px solid #ddd; }
+.admin-tabs a.active { background-color: #ff91c7; color: #fff; border-color: #ff91c7; }
+.admin-total-row td { font-weight: 700; }
+.admin-empty { text-align: center; padding: 30px; color: #999; }

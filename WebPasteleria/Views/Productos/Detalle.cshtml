@@ -1,5 +1,141 @@
 ﻿@model WebPasteleria.Models.Producto
 
 @{
-    ViewData["Title"] = "Detalle de Producto";
+    ViewData["Title"] = Model.Nombre + " - Pastelería Carmen";
+    var imagen = string.IsNullOrWhiteSpace(Model.ImagenUrl) ? Url.Content("~/images/no-image.svg") : Model.ImagenUrl;
+    var relacionados = ViewBag.ProductosRelacionados as List<Producto> ?? new List<Producto>();
+    var hayStock = (Model.Stock ?? 0) > 0;
 }
+
+<section style="background-color: #ffe4f0;">
+    <div class="container">
+        <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+            <a asp-controller="Home" asp-action="Index" class="stext-109 cl8 hov-cl1 trans-04">
+                Inicio <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+            </a>
+            <a asp-controller="Productos" asp-action="Index" class="stext-109 cl8 hov-cl1 trans-04">
+                Pasteles <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+            </a>
+            <span class="stext-109 cl4">@Model.Nombre</span>
+        </div>
+    </div>
+</section>
+
+<section class="p-t-65 p-b-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 p-b-30">
+                <img src="@imagen" alt="@Model.Nombre"
+                     style="width: 100%; max-height: 520px; object-fit: cover; border-radius: 10px;" />
+            </div>
+
+            <div class="col-md-6 p-b-30">
+                <span class="stext-107 cl6">@Model.IdCategoriaNavigation?.Nombre</span>
+                <h1 class="mtext-105 cl2 p-b-14" style="font-size: 30px;">@Model.Nombre</h1>
+
+                <p class="mtext-106 p-b-14" style="color: #ff91c7; font-size: 26px; font-weight: bold;">
+                    @Model.Precio.ToString("N2") Bs
+                    @if (!string.IsNullOrWhiteSpace(Model.UnidadMedida))
+                    {
+                        <small class="stext-107 cl6">/ @Model.UnidadMedida</small>
+                    }
+                </p>
+
+                <p class="stext-102 cl3 p-b-23">@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Sin descripción." :
+                                        Model.Descripcion)</p>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Codigo))
+                    {
+                        <p class="stext-107 cl6 p-b-5">Código: @Model.Codigo</p>
+                    }
+
+                    @if (hayStock)
+                    {
+                        <p class="stext-107 p-b-20" style="color: #4caf50;">
+                            <i class="zmdi zmdi-check-circle"></i> @Model.Stock disponibles
+                        </p>
+
+                        <div class="flex-w align-items-center">
+                            <input type="number" id="cantidad-detalle" value="1" min="1" max="@Model.Stock"
+                                   class="stext-111 cl2 size-111 p-lr-15 bor8" style="width: 90px; margin-right: 15px;" />
+                            <button type="button" id="btn-agregar-detalle"
+                                    class="flex-c-m stext-101 cl0 size-101 p-lr-15 trans-04"
+                                    style="background-color: #ff91c7; border-color: #ff91c7;" data-id="@Model.Id"
+                                    data-nombre="@Model.Nombre"
+                                    data-precio="@Model.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                    data-imagen="@imagen" data-stock="@Model.Stock">
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="stext-107" style="color: #ff4444;"><i class="zmdi zmdi-alert-circle"></i> Producto agotado</p>
+                    }
+                </div>
+            </div>
+
+            @if (relacionados.Count > 0)
+            {
+                <h4 class="mtext-105 cl5 p-t-40 p-b-20">Productos relacionados</h4>
+                <div class="row">
+                    @foreach (var relacionado in relacionados)
+                    {
+                        var imagenRelacionado = string.IsNullOrWhiteSpace(relacionado.ImagenUrl) ?
+                Url.Content("~/images/no-image.svg") : relacionado.ImagenUrl;
+                        <div class="col-6 col-md-3 p-b-30">
+                            <a asp-controller="Productos" asp-action="Detalle" asp-route-id="@relacionado.Id" style="color: #333;">
+                                <img src="@imagenRelacionado" alt="@relacionado.Nombre"
+                                     style="width: 100%; height: 180px; object-fit: cover; border-radius: 8px;" />
+                                <span class="stext-104 d-block p-t-10">@relacionado.Nombre</span>
+                                <span class="stext-105"
+                                      style="color: #ff91c7; font-weight: bold;">@relacionado.Precio.ToString("N2") Bs</span>
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+
+    @section Scripts {
+        <script>
+            (function () {
+                const boton = document.getElementById('btn-agregar-detalle');
+                if (!boton) return;
+
+                boton.addEventListener('click', function () {
+                    const stock = parseInt(boton.dataset.stock, 10) || 0;
+                    const entrada = document.getElementById('cantidad-detalle');
+                    const cantidad = Math.max(1, parseInt(entrada.value, 10) || 1);
+
+                    let carrito = [];
+                    try { carrito = JSON.parse(localStorage.getItem('carrito')) || []; } catch (e) { carrito = []; }
+
+                    const id = parseInt(boton.dataset.id, 10);
+                    const existente = carrito.find(item => item.id === id);
+                    const total = (existente ? existente.cantidad : 0) + cantidad;
+
+                    if (total > stock) {
+                        swal("Stock insuficiente", "Solo hay " + stock + " unidades disponibles.", "warning");
+                        return;
+                    }
+
+                    if (existente) {
+                        existente.cantidad = total;
+                    } else {
+                        carrito.push({
+                            id: id,
+                            nombre: boton.dataset.nombre,
+                            precio: parseFloat(boton.dataset.precio),
+                            imagen: boton.dataset.imagen,
+                            cantidad: cantidad
+                        });
+                    }
+
+                    localStorage.setItem('carrito', JSON.stringify(carrito));
+                    swal("¡Agregado!", boton.dataset.nombre + " se agregó al carrito.", "success");
+                });
+            })();
+        </script>
+    }

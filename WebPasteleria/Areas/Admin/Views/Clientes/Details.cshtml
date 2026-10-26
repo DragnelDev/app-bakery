@@ -5,6 +5,16 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+@if (Model is null)
+{
+    <div class="details-container">
+        <div class="details-card">
+            <p>No se encontró información del cliente.</p>
+        </div>
+    </div>
+}
+else
+{
 <div class="details-header">
     <div>
         <h1><i class="fas fa-user-circle"></i> Perfil del Cliente</h1>
@@ -29,18 +39,18 @@
             </div>
             
             <div class="profile-name">
-                <h2>@Model.Nombre @Model.Apellido</h2>
-                <span class="ci-number">CI: @Model.CedulaIdentidad</span>
+                <h2>@(Model?.Nombre ?? "Cliente") @(Model?.Apellido ?? "")</h2>
+                <span class="ci-number">CI: @(Model?.CedulaIdentidad ?? "No disponible")</span>
             </div>
 
             <div class="profile-badges">
-                @if (Model.TipoCliente == "VIP")
+                @if (Model is not null && Model.TipoCliente == "VIP")
                 {
                     <span class="tipo-badge vip">
                         <i class="fas fa-crown"></i> Cliente VIP
                     </span>
                 }
-                else if (Model.TipoCliente == "Frecuente")
+                else if (Model is not null && Model.TipoCliente == "Frecuente")
                 {
                     <span class="tipo-badge frecuente">
                         <i class="fas fa-star"></i> Cliente Frecuente
@@ -53,7 +63,7 @@
                     </span>
                 }
                 
-                @if (Model.Estado == 1)
+                @if (Model is not null && Model.Estado == 1)
                 {
                     <span class="estado-badge activo">
                         <i class="fas fa-check-circle"></i> Activo
@@ -77,7 +87,7 @@
                         <i class="fas fa-phone"></i> Celular
                     </div>
                     <div class="info-value">
-                        @if (!string.IsNullOrEmpty(Model.Celular))
+                        @if (Model is not null && !string.IsNullOrEmpty(Model.Celular))
                         {
                             <a href="tel:@Model.Celular">@Model.Celular</a>
                         }
@@ -93,7 +103,7 @@
                         <i class="fas fa-envelope"></i> Email
                     </div>
                     <div class="info-value">
-                        @if (!string.IsNullOrEmpty(Model.Email))
+                        @if (Model is not null && !string.IsNullOrEmpty(Model.Email))
                         {
                             <a href="mailto:@Model.Email">@Model.Email</a>
                         }
@@ -109,7 +119,7 @@
                         <i class="fas fa-map-marker-alt"></i> Dirección
                     </div>
                     <div class="info-value">
-                        @if (!string.IsNullOrEmpty(Model.Direccion))
+                        @if (Model is not null && !string.IsNullOrEmpty(Model.Direccion))
                         {
                             @Model.Direccion
                         }
@@ -123,7 +133,7 @@
         </div>
 
         <!-- SECCIÓN DE PREFERENCIAS -->
-        @if (!string.IsNullOrEmpty(Model.Preferencias))
+        @if (Model is not null && !string.IsNullOrEmpty(Model.Preferencias))
         {
             <div class="preferences-section">
                 <h3><i class="fas fa-heart"></i> Preferencias del Cliente</h3>
@@ -139,16 +149,17 @@
             <div class="metadata-grid">
                 <div class="metadata-item">
                     <span class="metadata-label">Registrado por:</span>
-                    <span class="metadata-value">@Model.UsuarioRegistro</span>
+                    <span class="metadata-value">@(Model?.UsuarioRegistro ?? "No registrado")</span>
                 </div>
                 <div class="metadata-item">
                     <span class="metadata-label">Fecha de registro:</span>
-                    <span class="metadata-value">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</span>
+                    <span class="metadata-value">@(Model?.FechaRegistro.ToString("dd/MM/yyyy HH:mm") ?? "Sin fecha")</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+}
 
 @section Styles {
     <style>

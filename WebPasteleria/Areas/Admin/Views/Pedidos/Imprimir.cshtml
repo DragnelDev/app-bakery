@@ -1,218 +1,248 @@
-﻿@model WebPasteleria.Models.Pedido
+﻿@model WebPasteleria.Services.Pedidos.PedidoDetalle
 
 @{
+    var pedido = Model.Pedido;
     Layout = null;
-    var detalles = ViewBag.Detalles as List<WebPasteleria.Models.DetallePedido>;
+    var detalles = Model.Detalles;
 }
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedido @Model.CodigoSeguimiento - Pastelería Carmen</title>
+    <title>Pedido @pedido.CodigoSeguimiento - Pastelería Carmen</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Courier New', monospace;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .ticket {
-            border: 2px solid #333;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            border-bottom: 2px dashed #333;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            font-size: 12px;
-            margin: 3px 0;
-        }
-
-        .section {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed #999;
-        }
-
-        .section:last-child {
-            border-bottom: none;
-        }
-
-        .section-title {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
-            font-size: 13px;
-        }
-
-        .info-label {
-            font-weight: bold;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-
-        table th {
-            background: #f0f0f0;
-            padding: 8px;
-            text-align: left;
-            border-bottom: 2px solid #333;
-            font-size: 12px;
-        }
-
-        table td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            font-size: 12px;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .total-section {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 2px solid #333;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
-            font-size: 14px;
-        }
-
-        .total-final {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed #333;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 2px dashed #333;
-            font-size: 11px;
-        }
-
-        .estado-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 3px;
-            font-weight: bold;
-            font-size: 12px;
-        }
-
-        .estado-pendiente { background: #fff3cd; color: #856404; }
-        .estado-confirmado { background: #d1ecf1; color: #0c5460; }
-        .estado-preparacion { background: #cfe2ff; color: #084298; }
-        .estado-listo { background: #e2e3e5; color: #383d41; }
-        .estado-camino { background: #d1ecf1; color: #0c5460; }
-        .estado-entregado { background: #d4edda; color: #155724; }
-        .estado-cancelado { background: #f8d7da; color: #721c24; }
-
-        .barcode {
-            text-align: center;
-            margin: 15px 0;
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .qr-placeholder {
-            text-align: center;
-            margin: 10px 0;
-            padding: 20px;
-            border: 1px dashed #999;
-            font-size: 11px;
-            color: #666;
-        }
-
-        media print {
-            body {
+            * {
+                margin: 0;
                 padding: 0;
+                box-sizing: border-box;
             }
 
-            .no-print {
-                display: none !important;
+            body {
+                font-family: 'Courier New', monospace;
+                padding: 20px;
+                max-width: 800px;
+                margin: 0 auto;
             }
 
             .ticket {
+                border: 2px solid #333;
+                padding: 20px;
+            }
+
+            .header {
+                text-align: center;
+                border-bottom: 2px dashed #333;
+                padding-bottom: 15px;
+                margin-bottom: 15px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+                margin-bottom: 5px;
+            }
+
+            .header p {
+                font-size: 12px;
+                margin: 3px 0;
+            }
+
+            .section {
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px dashed #999;
+            }
+
+            .section:last-child {
+                border-bottom: none;
+            }
+
+            .section-title {
+                font-weight: bold;
+                font-size: 14px;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+            }
+
+            .info-row {
+                display: flex;
+                justify-content: space-between;
+                margin: 5px 0;
+                font-size: 13px;
+            }
+
+            .info-label {
+                font-weight: bold;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 10px 0;
+            }
+
+            table th {
+                background: #f0f0f0;
+                padding: 8px;
+                text-align: left;
+                border-bottom: 2px solid #333;
+                font-size: 12px;
+            }
+
+            table td {
+                padding: 8px;
+                border-bottom: 1px solid #ddd;
+                font-size: 12px;
+            }
+
+            .text-right {
+                text-align: right;
+            }
+
+            .text-center {
+                text-align: center;
+            }
+
+            .total-section {
+                margin-top: 15px;
+                padding-top: 10px;
+                border-top: 2px solid #333;
+            }
+
+            .total-row {
+                display: flex;
+                justify-content: space-between;
+                margin: 5px 0;
+                font-size: 14px;
+            }
+
+            .total-final {
+                font-size: 18px;
+                font-weight: bold;
+                margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px dashed #333;
+            }
+
+            .footer {
+                text-align: center;
+                margin-top: 20px;
+                padding-top: 15px;
+                border-top: 2px dashed #333;
+                font-size: 11px;
+            }
+
+            .estado-badge {
+                display: inline-block;
+                padding: 5px 15px;
+                border-radius: 3px;
+                font-weight: bold;
+                font-size: 12px;
+            }
+
+            .estado-pendiente {
+                background: #fff3cd;
+                color: #856404;
+            }
+
+            .estado-confirmado {
+                background: #d1ecf1;
+                color: #0c5460;
+            }
+
+            .estado-preparacion {
+                background: #cfe2ff;
+                color: #084298;
+            }
+
+            .estado-listo {
+                background: #e2e3e5;
+                color: #383d41;
+            }
+
+            .estado-camino {
+                background: #d1ecf1;
+                color: #0c5460;
+            }
+
+            .estado-entregado {
+                background: #d4edda;
+                color: #155724;
+            }
+
+            .estado-cancelado {
+                background: #f8d7da;
+                color: #721c24;
+            }
+
+            .barcode {
+                text-align: center;
+                margin: 15px 0;
+                font-size: 24px;
+                font-weight: bold;
+                letter-spacing: 3px;
+                font-family: 'Courier New', monospace;
+            }
+
+            .qr-placeholder {
+                text-align: center;
+                margin: 10px 0;
+                padding: 20px;
+                border: 1px dashed #999;
+                font-size: 11px;
+                color: #666;
+            }
+
+            media print {
+                body {
+                    padding: 0;
+                }
+
+                .no-print {
+                    display: none !important;
+                }
+
+                .ticket {
+                    border: none;
+                }
+
+                page {
+                    margin: 1cm;
+                }
+            }
+
+            .print-buttons {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                margin: 0 5px;
                 border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
             }
 
-            page {
-                margin: 1cm;
+            .btn-primary {
+                background: #ff91c7;
+                color: white;
             }
-        }
 
-        .print-buttons {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+            .btn-secondary {
+                background: #6c757d;
+                color: white;
+            }
 
-        .btn {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: #ff91c7;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn:hover {
-            opacity: 0.8;
-        }
+            .btn:hover {
+                opacity: 0.8;
+            }
     </style>
 </head>
+
 <body>
     <!-- Botones de acción -->
     <div class="print-buttons no-print">
@@ -236,7 +266,7 @@
 
         <!-- Código de barras simulado -->
         <div class="barcode">
-            @Model.CodigoSeguimiento
+            @pedido.CodigoSeguimiento
         </div>
 
         <!-- Información del pedido -->
@@ -244,15 +274,15 @@
             <div class="section-title">INFORMACIÓN DEL PEDIDO</div>
             <div class="info-row">
                 <span class="info-label">Pedido N°:</span>
-                <span>@Model.CodigoSeguimiento</span>
+                <span>@pedido.CodigoSeguimiento</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Fecha:</span>
-                <span>@Model.FechaPedido?.ToString("dd/MM/yyyy HH:mm")</span>
+                <span>@pedido.FechaPedido?.ToString("dd/MM/yyyy HH:mm")</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Fecha Entrega:</span>
-                <span>@Model.FechaEntrega?.ToString("dd/MM/yyyy")</span>
+                <span>@pedido.FechaEntrega?.ToString("dd/MM/yyyy")</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Estado:</span>
@@ -261,7 +291,7 @@
                         var estadoTexto = "";
                         var estadoClass = "";
                         
-                        switch (Model.EstadoPedido)
+                        switch (pedido.EstadoPedido)
                         {
                             case 0: estadoTexto = "PENDIENTE"; estadoClass = "estado-pendiente"; break;
                             case 1: estadoTexto = "CONFIRMADO"; estadoClass = "estado-confirmado"; break;
@@ -282,20 +312,27 @@
             <div class="section-title">DATOS DEL CLIENTE</div>
             <div class="info-row">
                 <span class="info-label">Nombre:</span>
-                <span>@Model.NombreCliente</span>
+                <span>@pedido.NombreCliente</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Email:</span>
-                <span>@Model.EmailCliente</span>
+                <span>@pedido.EmailCliente</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Teléfono:</span>
-                <span>@Model.CelularCliente</span>
+                <span>@pedido.CelularCliente</span>
             </div>
+            @if (!string.IsNullOrWhiteSpace(pedido.Direccion))
+            {
+                <div class="info-row">
+                    <span class="info-label">Dirección:</span>
+                    <span>@pedido.Direccion</span>
+                </div>
+            }
             <div class="info-row">
                 <span class="info-label">Tipo Entrega:</span>
                 <span>
-                    @if (Model.TipoEntrega == "RECOGER")
+                    @if (pedido.TipoEntrega == "RECOGER")
                     {
                         <strong>🏪 RECOGER EN TIENDA</strong>
                     }
@@ -342,20 +379,20 @@
         <div class="total-section">
             <div class="total-row total-final">
                 <span>TOTAL A PAGAR:</span>
-                <span>@Model.Total?.ToString("N2") Bs</span>
+                <span>@pedido.Total?.ToString("N2") Bs</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Método de Pago:</span>
-                <span>@Model.MetodoPagoNavigation?.Nombre</span>
+                <span>@pedido.MetodoPagoNavigation?.Nombre</span>
             </div>
         </div>
 
         <!-- Observaciones -->
-        @if (!string.IsNullOrEmpty(Model.Observaciones))
+        @if (!string.IsNullOrEmpty(pedido.Observaciones))
         {
             <div class="section">
                 <div class="section-title">OBSERVACIONES</div>
-                <p style="font-size: 12px;">@Model.Observaciones</p>
+                <p style="font-size: 12px;">@pedido.Observaciones</p>
             </div>
         }
 
@@ -378,19 +415,20 @@
     </div>
 
     <script>
-        // Auto-abrir diálogo de impresión
-        window.onload = function() {
-            // Pequeño delay para que cargue bien
-            setTimeout(function() {
-                window.print();
-            }, 500);
-        };
+            // Auto-abrir diálogo de impresión
+            window.onload = function () {
+                // Pequeño delay para que cargue bien
+                setTimeout(function () {
+                    window.print();
+                }, 500);
+            };
 
-        // Cerrar ventana después de imprimir o cancelar
-        window.onafterprint = function() {
-            // Opcional: cerrar automáticamente
-            // window.close();
-        };
+            // Cerrar ventana después de imprimir o cancelar
+            window.onafterprint = function () {
+                // Opcional: cerrar automáticamente
+                // window.close();
+            };
     </script>
 </body>
+
 </html>

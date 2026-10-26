@@ -1,0 +1,13 @@
+@model RangoFechasViewModel
+
+<form method="get" class="admin-filter">
+    <div>
+        <label for="desde">Desde</label>
+        <input type="date" id="desde" name="desde" value="@Model.Desde.ToString("yyyy-MM-dd")" />
+    </div>
+    <div>
+        <label for="hasta">Hasta</label>
+        <input type="date" id="hasta" name="hasta" value="@Model.Hasta.ToString("yyyy-MM-dd")" />
+    </div>
+    <button type="submit" class="admin-btn admin-btn-primary">Filtrar</button>
+</form>

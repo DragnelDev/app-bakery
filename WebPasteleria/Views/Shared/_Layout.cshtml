@@ -141,7 +141,7 @@
                             <i class="zmdi zmdi-shopping-cart"></i>
                         </div>
 
-                        <a asp-controller="Cuenta" asp-action="Login"
+                        <a asp-controller="Account" asp-action="Login" title="Iniciar Sesión"
                             class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" style="color: #fff;">
                             <i class="zmdi zmdi-account"></i>
                         </a>
@@ -198,8 +198,8 @@
                             Ayuda & Preguntas
                         </a>
 
-                        <a href="#" class="flex-c-m p-lr-10 trans-04" style="color: #fff;">
-                            Mi Cuenta
+                        <a asp-controller="Pedidos" asp-action="BuscarPedido" class="flex-c-m p-lr-10 trans-04" style="color: #fff;">
+                            Mis Pedidos
                         </a>
 
                         <a href="#" class="flex-c-m p-lr-10 trans-04" style="color: #fff;">
@@ -221,7 +221,7 @@
                     <a asp-controller="Productos" asp-action="Index" style="color: #fff;">Pasteles</a>
                 </li>
                 <li>
-                    <a asp-controller="Home" asp-action="Carrito" class="label1 rs1" data-label1="🛒"
+                    <a asp-controller="Carritos" asp-action="Index" class="label1 rs1" data-label1="🛒"
                         style="color: #fff;">Carrito</a>
                 </li>
 

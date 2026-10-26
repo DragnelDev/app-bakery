@@ -1,85 +1,34 @@
-﻿@model WebPasteleria.Models.Cliente
-
+@model CategoriaFormViewModel
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Editar categoría";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="card">
+    <div class="admin-page-header"><h3>Editar categoría</h3></div>
 
-<h4>Cliente</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="CedulaIdentidad" class="control-label"></label>
-                <input asp-for="CedulaIdentidad" class="form-control" />
-                <span asp-validation-for="CedulaIdentidad" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Nombre" class="control-label"></label>
-                <input asp-for="Nombre" class="form-control" />
-                <span asp-validation-for="Nombre" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Apellido" class="control-label"></label>
-                <input asp-for="Apellido" class="form-control" />
-                <span asp-validation-for="Apellido" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Celular" class="control-label"></label>
-                <input asp-for="Celular" class="form-control" />
-                <span asp-validation-for="Celular" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Direccion" class="control-label"></label>
-                <input asp-for="Direccion" class="form-control" />
-                <span asp-validation-for="Direccion" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TipoCliente" class="control-label"></label>
-                <input asp-for="TipoCliente" class="form-control" />
-                <span asp-validation-for="TipoCliente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Preferencias" class="control-label"></label>
-                <input asp-for="Preferencias" class="form-control" />
-                <span asp-validation-for="Preferencias" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UsuarioRegistro" class="control-label"></label>
-                <input asp-for="UsuarioRegistro" class="form-control" />
-                <span asp-validation-for="UsuarioRegistro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaRegistro" class="control-label"></label>
-                <input asp-for="FechaRegistro" class="form-control" />
-                <span asp-validation-for="FechaRegistro" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Estado" class="control-label"></label>
-                <input asp-for="Estado" class="form-control" />
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+    <form asp-action="Edit" method="post" class="admin-form">
+        <div asp-validation-summary="ModelOnly" class="admin-summary-error"></div>
+        <input type="hidden" asp-for="Id" />
+
+        <div class="admin-field">
+            <label asp-for="Nombre"></label>
+            <input asp-for="Nombre" type="text" maxlength="50" />
+            <span asp-validation-for="Nombre" class="field-error"></span>
+        </div>
+
+        <div class="admin-field">
+            <label asp-for="Estado"></label>
+            <select asp-for="Estado">
+                <option value="1">Activa</option>
+                <option value="0">Inactiva</option>
+            </select>
+            <span asp-validation-for="Estado" class="field-error"></span>
+        </div>
+
+        <div class="admin-form-actions">
+            <button type="submit" class="admin-btn admin-btn-primary">Guardar cambios</button>
+            <a asp-action="Index" class="admin-btn admin-btn-secondary">Cancelar</a>
+        </div>
+    </form>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
